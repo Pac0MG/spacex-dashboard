@@ -29,27 +29,6 @@ body {
   justify-content: space-between;
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
-
-.logo-icon {
-  font-size: 48px;
-}
-
-.logo h1 {
-  margin: 0;
-  font-size: 32px;
-}
-
-.logo p {
-  margin: 6px 0 0;
-  color: #9ca3af;
-  font-size: 15px;
-}
-
 .nav {
   display: flex;
   gap: 12px;
