@@ -27,7 +27,7 @@ export const useRocketsStore = defineStore("rockets", () => {
       });
     } catch (err) {
       error.value =
-        "It's not possible load the launches. Please try again later!";
+        "It's not possible load the rockets. Please try again later!";
     } finally {
       loading.value = false;
     }
@@ -51,7 +51,7 @@ export const useRocketsStore = defineStore("rockets", () => {
       return rocket;
     } catch (err) {
       error.value =
-        "It's not possible load the launches. Please try again later!";
+        "It's not possible load the rockets. Please try again later!";
       throw err;
     } finally {
       loading.value = false;

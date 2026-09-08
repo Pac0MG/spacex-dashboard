@@ -33,6 +33,8 @@ export const useLaunchesStore = defineStore("launches", () => {
     try {
       const response = await api.get("/launches");
 
+      console.log("LAUNCHES RESPONSE:", response.data);
+
       launches.value = response.data;
 
       response.data.forEach((launch) => {
