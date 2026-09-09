@@ -71,6 +71,11 @@ const formattedDate = computed(() => {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.launch-image:hover img {
+  transform: scale(1.25);
 }
 
 .no-image {

@@ -37,6 +37,9 @@ body {
   color: white;
   display: flex;
   align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .header-content {

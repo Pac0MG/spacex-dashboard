@@ -2,9 +2,7 @@
   <section>
     <div class="page-header">
       <h1>Rockets</h1>
-      <p>
-        Explore rockets from SpaceX.
-      </p>
+      <p>Explore rockets from SpaceX.</p>
     </div>
     <LoadingSpinner v-if="store.loading" />
     <ErrorMessage
@@ -54,10 +52,7 @@ onMounted(() => {
 }
 .rockets-grid {
   display: grid;
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(280px, 1fr)
-  );
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
 }
 </style>
