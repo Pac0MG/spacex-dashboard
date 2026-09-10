@@ -13,8 +13,8 @@
       <p class="launch-date">
         {{ formattedDate }}
       </p>
-      <span class="status" :class="launch.success ? 'success' : 'failure'">
-        {{ launch.success ? "Success" : "Failure" }}
+      <span class="status" :class="statusClass">
+        {{ statusLabel }}
       </span>
       <p v-if="launch.details" class="details">
         {{ launch.details }}
@@ -42,6 +42,16 @@ const formattedDate = computed(() => {
     month: "2-digit",
     year: "numeric",
   });
+});
+
+const statusLabel = computed(() => {
+  if (props.launch.upcoming) return "Upcoming";
+  return props.launch.success ? "Success" : "Failure";
+});
+
+const statusClass = computed(() => {
+  if (props.launch.upcoming) return "upcoming";
+  return props.launch.success ? "success" : "failure";
 });
 </script>
 
@@ -114,6 +124,11 @@ const formattedDate = computed(() => {
 .failure {
   background: #fee2e2;
   color: #991b1b;
+}
+
+.upcoming {
+  background: #dbeafe;
+  color: #1e40af;
 }
 
 .details {

@@ -38,13 +38,19 @@
       </div>
 
       <div class="pagination">
-        <button :disabled="currentPage === 1" @click="goToPage(currentPage - 1)">
+        <button
+          :disabled="currentPage === 1"
+          @click="goToPage(currentPage - 1)"
+        >
           Previous
         </button>
 
         <span> Page {{ currentPage }} of {{ totalPages }} </span>
 
-        <button :disabled="currentPage === totalPages" @click="goToPage(currentPage + 1)">
+        <button
+          :disabled="currentPage === totalPages"
+          @click="goToPage(currentPage + 1)"
+        >
           Next
         </button>
       </div>
@@ -85,22 +91,22 @@ function goToPage(page) {
 }
 
 async function loadLaunches() {
-  console.log("=== LOAD LAUNCHES ===");
+  // console.log("=== LOAD LAUNCHES ===");
 
   await store.fetchLaunches();
 
-  console.log("FETCH COMPLETED");
-  console.log("STORE LAUNCHES:", store.launches);
-  console.log("FILTERED LAUNCHES:", store.filteredLaunches);
-  console.log("VISIBLE LAUNCHES:", visibleLaunches.value);
-  console.log("LOADING:", store.loading);
-  console.log("ERROR:", store.error);
+  // console.log("FETCH COMPLETED");
+  // console.log("STORE LAUNCHES:", store.launches);
+  // console.log("FILTERED LAUNCHES:", store.filteredLaunches);
+  // console.log("VISIBLE LAUNCHES:", visibleLaunches.value);
+  // console.log("LOADING:", store.loading);
+  // console.log("ERROR:", store.error);
 }
 
 watch(
   () => store.search,
   (value) => {
-    console.log("SEARCH:", value);
+    // console.log("SEARCH:", value);
     currentPage.value = 1;
   },
 );
@@ -108,12 +114,12 @@ watch(
 watch(
   () => store.launches,
   (value) => {
-    console.log("=== LAUNCHES UPDATED ===");
-    console.log("STORE LAUNCHES:", value);
-    console.log("FILTERED LAUNCHES:", store.filteredLaunches);
-    console.log("VISIBLE LAUNCHES:", visibleLaunches.value);
-    console.log("LOADING:", store.loading);
-    console.log("ERROR:", store.error);
+    // console.log("=== LAUNCHES UPDATED ===");
+    // console.log("STORE LAUNCHES:", value);
+    // console.log("FILTERED LAUNCHES:", store.filteredLaunches);
+    // console.log("VISIBLE LAUNCHES:", visibleLaunches.value);
+    // console.log("LOADING:", store.loading);
+    // console.log("ERROR:", store.error);
   },
   { deep: true },
 );
