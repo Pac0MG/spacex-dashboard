@@ -15,7 +15,7 @@
         <input
           type="checkbox"
           id="failure"
-          :checked="filters.success"
+          :checked="filters.failure"
           @change="updateStatusFilter"
         />
         <label for="failure">Failure</label>
@@ -24,7 +24,7 @@
         <input
           type="checkbox"
           id="upcoming"
-          :checked="filters.success"
+          :checked="filters.upcoming"
           @change="updateStatusFilter"
         />
         <label for="upcoming">Upcoming</label>
@@ -42,7 +42,37 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { reactive } from "vue";
+
+defineProps({
+  years: {
+    type: Array,
+    default: () => [],
+  },
+  selectedYear: {
+    type: [String, Number],
+    default: "all",
+  },
+});
+const emit = defineEmits(["change-filter", "change-year"]);
+const filters = reactive({
+  success: true,
+  failure: true,
+  upcoming: true,
+});
+function updateStatusFilter(event) {
+  const inputId = event.target.id;
+  const isActive = event.target.checked;
+
+  filters[inputId] = isActive;
+
+  emit("change-filter", { ...filters });
+}
+function updateYear(event) {
+  emit("change-year", event.target.value);
+}
+</script>
 
 <style scoped>
 .launch-filter {

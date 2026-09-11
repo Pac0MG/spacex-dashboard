@@ -14,7 +14,14 @@
       />
     </div>
 
-    <LoadingSpinner v-if="store.loading" />
+    <LaunchFilter
+      :years="store.availableYears"
+      :selected-year="store.yearFilter"
+      @change-filter="handleFilterChange"
+      @change-year="handleYearChange"
+    />
+
+    <LoadingSkeleton v-if="store.loading" :count="6" />
 
     <ErrorMessage
       v-else-if="store.error"
@@ -64,7 +71,8 @@ import { computed, onMounted, ref, watch } from "vue";
 import { useLaunchesStore } from "../store/launches";
 
 import LaunchCard from "../components/LaunchCard.vue";
-import LoadingSpinner from "../components/LoadingSpinner.vue";
+import LaunchFilter from "../components/LaunchFilter.vue";
+import LoadingSkeleton from "../components/LoadingSkeleton.vue";
 import ErrorMessage from "../components/ErrorMessage.vue";
 import EmptyState from "../components/EmptyState.vue";
 
@@ -88,6 +96,16 @@ const visibleLaunches = computed(() => {
 function goToPage(page) {
   currentPage.value = page;
   window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function handleFilterChange(filters) {
+  store.setStatusFilter(filters);
+  currentPage.value = 1;
+}
+
+function handleYearChange(year) {
+  store.setYear(year);
+  currentPage.value = 1;
 }
 
 async function loadLaunches() {

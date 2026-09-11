@@ -10,16 +10,43 @@ export const useLaunchesStore = defineStore("launches", () => {
   const error = ref(null);
   const search = ref("");
 
+  const statusFilter = ref({
+    success: true,
+    failure: true,
+    upcoming: true,
+  });
+  const yearFilter = ref("all");
+
+  const availableYears = computed(() => {
+    const years = new Set(
+      launches.value.map((launch) => new Date(launch.date_utc).getFullYear()),
+    );
+    return [...years].sort((a, b) => b - a);
+  });
+  function matchesStatus(launch) {
+    if (launch.upcoming) {
+      return statusFilter.value.upcoming;
+    }
+    if (launch.success) {
+      return statusFilter.value.success;
+    }
+    return statusFilter.value.failure;
+  }
+  function matchesYear(launch) {
+    if (yearFilter.value === "all") {
+      return true;
+    }
+    return new Date(launch.date_utc).getFullYear() === Number(yearFilter.value);
+  }
   const filteredLaunches = computed(() => {
     const term = search.value.trim().toLowerCase();
 
-    if (!term) {
-      return launches.value;
-    }
+    return launches.value.filter((launch) => {
+      const matchesSearch =
+        !term || (launch.name || "").toLowerCase().includes(term);
 
-    return launches.value.filter((launch) =>
-      (launch.name || "").toLowerCase().includes(term),
-    );
+      return matchesSearch && matchesStatus(launch) && matchesYear(launch);
+    });
   });
 
   async function fetchLaunches() {
@@ -77,15 +104,28 @@ export const useLaunchesStore = defineStore("launches", () => {
     search.value = value;
   }
 
+  function setStatusFilter(filters) {
+    statusFilter.value = filters;
+  }
+
+  function setYear(year) {
+    yearFilter.value = year;
+  }
+
   return {
     launches,
     launchById,
     loading,
     error,
     search,
+    statusFilter,
+    yearFilter,
+    availableYears,
     filteredLaunches,
     fetchLaunches,
     fetchLaunch,
     setSearch,
+    setStatusFilter,
+    setYear,
   };
 });

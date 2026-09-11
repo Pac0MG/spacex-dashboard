@@ -4,7 +4,7 @@
       <h1>Rockets</h1>
       <p>Explore rockets from SpaceX.</p>
     </div>
-    <LoadingSpinner v-if="store.loading" />
+    <LoadingSkeleton v-if="store.loading" variant="vertical" :count="6" />
     <ErrorMessage
       v-else-if="store.error"
       :message="store.error"
@@ -28,7 +28,7 @@
 import { onMounted } from "vue";
 import { useRocketsStore } from "../store/rockets";
 import RocketCard from "../components/RocketCard.vue";
-import LoadingSpinner from "../components/LoadingSpinner.vue";
+import LoadingSkeleton from "../components/LoadingSkeleton.vue";
 import ErrorMessage from "../components/ErrorMessage.vue";
 import EmptyState from "../components/EmptyState.vue";
 const store = useRocketsStore();

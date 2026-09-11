@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <div class="header-content">
-      <h1>SpaceX Dashboard</h1>
+      <span class="brand">SpaceX</span>
 
       <nav class="nav">
         <RouterLink to="/launches"> Launches </RouterLink>
@@ -23,6 +23,8 @@
 <script setup></script>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap");
+
 * {
   box-sizing: border-box;
 }
@@ -36,14 +38,20 @@ body {
 
 .header {
   width: 100%;
-  min-height: 140px;
-  background: #111827;
+  min-height: 200px;
   color: white;
   display: flex;
   align-items: center;
   position: sticky;
   top: 0;
   z-index: 100;
+  background-color: #111827;
+  background-image:
+    linear-gradient(rgba(17, 24, 39, 0.55), rgba(17, 24, 39, 0.8)),
+    url("https://assets.science.nasa.gov/content/dam/science/esd/eo/images/imagerecords/150000/150456/iss066e024707_lrg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .header-content {
@@ -57,9 +65,13 @@ body {
   justify-content: space-between;
 }
 
-.header-content h1 {
+.brand {
+  font-family: "Orbitron", sans-serif;
+  font-weight: 900;
   font-size: 28px;
-  margin: 0;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: white;
 }
 
 .nav {
@@ -121,14 +133,14 @@ body {
   }
 
   .header-content {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-wrap: wrap;
     gap: 14px;
     padding: 20px;
   }
 
-  .header-content h1 {
+  .brand {
     font-size: 22px;
+    letter-spacing: 2px;
   }
 
   .nav {
