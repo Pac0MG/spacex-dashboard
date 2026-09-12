@@ -15,13 +15,14 @@
     </div>
 
     <LaunchFilter
+      :filters="store.statusFilter"
       :years="store.availableYears"
       :selected-year="store.yearFilter"
       @change-filter="handleFilterChange"
       @change-year="handleYearChange"
     />
 
-    <LoadingSkeleton v-if="store.loading" :count="6" />
+    <LoadingSpinner v-if="store.loading" />
 
     <ErrorMessage
       v-else-if="store.error"
@@ -72,7 +73,7 @@ import { useLaunchesStore } from "../store/launches";
 
 import LaunchCard from "../components/LaunchCard.vue";
 import LaunchFilter from "../components/LaunchFilter.vue";
-import LoadingSkeleton from "../components/LoadingSkeleton.vue";
+import LoadingSpinner from "../components/LoadingSpinner.vue";
 import ErrorMessage from "../components/ErrorMessage.vue";
 import EmptyState from "../components/EmptyState.vue";
 

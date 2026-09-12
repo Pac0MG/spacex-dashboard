@@ -43,9 +43,11 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
-
-defineProps({
+const props = defineProps({
+  filters: {
+    type: Object,
+    default: () => ({ success: true, failure: true, upcoming: true }),
+  },
   years: {
     type: Array,
     default: () => [],
@@ -56,18 +58,11 @@ defineProps({
   },
 });
 const emit = defineEmits(["change-filter", "change-year"]);
-const filters = reactive({
-  success: true,
-  failure: true,
-  upcoming: true,
-});
 function updateStatusFilter(event) {
   const inputId = event.target.id;
   const isActive = event.target.checked;
 
-  filters[inputId] = isActive;
-
-  emit("change-filter", { ...filters });
+  emit("change-filter", { ...props.filters, [inputId]: isActive });
 }
 function updateYear(event) {
   emit("change-year", event.target.value);
