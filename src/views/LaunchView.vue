@@ -18,11 +18,13 @@
       :filters="store.statusFilter"
       :years="store.availableYears"
       :selected-year="store.yearFilter"
+      :favorites-only="store.favoritesOnly"
       @change-filter="handleFilterChange"
       @change-year="handleYearChange"
+      @change-favorites-only="handleFavoritesOnlyChange"
     />
 
-    <LoadingSpinner v-if="store.loading" />
+    <LoadingSkeleton v-if="store.loading" :count="6" />
 
     <ErrorMessage
       v-else-if="store.error"
@@ -73,14 +75,14 @@ import { useLaunchesStore } from "../store/launches";
 
 import LaunchCard from "../components/LaunchCard.vue";
 import LaunchFilter from "../components/LaunchFilter.vue";
-import LoadingSpinner from "../components/LoadingSpinner.vue";
+import LoadingSkeleton from "../components/LoadingSkeleton.vue";
 import ErrorMessage from "../components/ErrorMessage.vue";
 import EmptyState from "../components/EmptyState.vue";
 
 const store = useLaunchesStore();
 
 const currentPage = ref(1);
-const launchesPerPage = 20;
+const launchesPerPage = 8;
 
 const totalPages = computed(() => {
   return Math.ceil(store.filteredLaunches.length / launchesPerPage);
@@ -109,6 +111,11 @@ function handleYearChange(year) {
   currentPage.value = 1;
 }
 
+function handleFavoritesOnlyChange(value) {
+  store.setFavoritesOnly(value);
+  currentPage.value = 1;
+}
+
 async function loadLaunches() {
   // console.log("=== LOAD LAUNCHES ===");
 
@@ -124,23 +131,9 @@ async function loadLaunches() {
 
 watch(
   () => store.search,
-  (value) => {
-    // console.log("SEARCH:", value);
+  () => {
     currentPage.value = 1;
   },
-);
-
-watch(
-  () => store.launches,
-  (value) => {
-    // console.log("=== LAUNCHES UPDATED ===");
-    // console.log("STORE LAUNCHES:", value);
-    // console.log("FILTERED LAUNCHES:", store.filteredLaunches);
-    // console.log("VISIBLE LAUNCHES:", visibleLaunches.value);
-    // console.log("LOADING:", store.loading);
-    // console.log("ERROR:", store.error);
-  },
-  { deep: true },
 );
 
 onMounted(() => {

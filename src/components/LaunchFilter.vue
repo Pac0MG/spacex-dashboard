@@ -29,6 +29,15 @@
         />
         <label for="upcoming">Upcoming</label>
       </span>
+      <span class="filter-option">
+        <input
+          type="checkbox"
+          id="favoritesOnly"
+          :checked="favoritesOnly"
+          @change="updateFavoritesOnly"
+        />
+        <label for="favoritesOnly">Favorites only ★</label>
+      </span>
     </div>
     <div class="year-row">
       <label for="year-select">Year</label>
@@ -56,8 +65,16 @@ const props = defineProps({
     type: [String, Number],
     default: "all",
   },
+  favoritesOnly: {
+    type: Boolean,
+    default: false,
+  },
 });
-const emit = defineEmits(["change-filter", "change-year"]);
+const emit = defineEmits([
+  "change-filter",
+  "change-year",
+  "change-favorites-only",
+]);
 function updateStatusFilter(event) {
   const inputId = event.target.id;
   const isActive = event.target.checked;
@@ -66,6 +83,9 @@ function updateStatusFilter(event) {
 }
 function updateYear(event) {
   emit("change-year", event.target.value);
+}
+function updateFavoritesOnly(event) {
+  emit("change-favorites-only", event.target.checked);
 }
 </script>
 

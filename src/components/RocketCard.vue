@@ -34,6 +34,14 @@
           <dd>{{ rocket.diameter?.meters }} m</dd>
         </div>
         <div class="spec">
+          <dt>Mass</dt>
+          <dd>{{ formattedMass }}</dd>
+        </div>
+        <div class="spec">
+          <dt>Country</dt>
+          <dd>{{ rocket.country || "—" }}</dd>
+        </div>
+        <div class="spec">
           <dt>Success rate</dt>
           <dd>{{ rocket.success_rate_pct }}%</dd>
         </div>
@@ -68,6 +76,11 @@ const formattedFirstFlight = computed(() => {
 const formattedCost = computed(() => {
   if (!props.rocket.cost_per_launch) return "—";
   return `$${props.rocket.cost_per_launch.toLocaleString("en-US")}`;
+});
+
+const formattedMass = computed(() => {
+  if (!props.rocket.mass?.kg) return "—";
+  return `${props.rocket.mass.kg.toLocaleString("en-US")} kg`;
 });
 </script>
 

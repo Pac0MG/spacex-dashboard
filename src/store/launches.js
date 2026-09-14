@@ -1,8 +1,11 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import api from "../services/api";
+import { useFavoritesStore } from "./favorites";
 
 export const useLaunchesStore = defineStore("launches", () => {
+  const favoritesStore = useFavoritesStore();
+
   const launches = ref([]);
   const launchById = ref(new Map());
 
@@ -16,6 +19,7 @@ export const useLaunchesStore = defineStore("launches", () => {
     upcoming: true,
   });
   const yearFilter = ref("all");
+  const favoritesOnly = ref(false);
 
   const availableYears = computed(() => {
     const years = new Set(
@@ -38,6 +42,12 @@ export const useLaunchesStore = defineStore("launches", () => {
     }
     return new Date(launch.date_utc).getFullYear() === Number(yearFilter.value);
   }
+  function matchesFavorites(launch) {
+    if (!favoritesOnly.value) {
+      return true;
+    }
+    return favoritesStore.isFavorite(launch.id);
+  }
   const filteredLaunches = computed(() => {
     const term = search.value.trim().toLowerCase();
 
@@ -45,7 +55,12 @@ export const useLaunchesStore = defineStore("launches", () => {
       const matchesSearch =
         !term || (launch.name || "").toLowerCase().includes(term);
 
-      return matchesSearch && matchesStatus(launch) && matchesYear(launch);
+      return (
+        matchesSearch &&
+        matchesStatus(launch) &&
+        matchesYear(launch) &&
+        matchesFavorites(launch)
+      );
     });
   });
 
@@ -112,6 +127,10 @@ export const useLaunchesStore = defineStore("launches", () => {
     yearFilter.value = year;
   }
 
+  function setFavoritesOnly(value) {
+    favoritesOnly.value = value;
+  }
+
   return {
     launches,
     launchById,
@@ -120,6 +139,7 @@ export const useLaunchesStore = defineStore("launches", () => {
     search,
     statusFilter,
     yearFilter,
+    favoritesOnly,
     availableYears,
     filteredLaunches,
     fetchLaunches,
@@ -127,5 +147,6 @@ export const useLaunchesStore = defineStore("launches", () => {
     setSearch,
     setStatusFilter,
     setYear,
+    setFavoritesOnly,
   };
 });

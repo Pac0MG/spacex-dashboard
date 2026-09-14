@@ -7,6 +7,16 @@
         :alt="`Mission patch for ${launch.name}`"
       />
       <div v-else class="no-image">No image</div>
+
+      <button
+        type="button"
+        class="favorite-btn"
+        :class="{ active: isFavorite }"
+        :aria-label="isFavorite ? 'Remove from favorites' : 'Add to favorites'"
+        @click="toggleFavorite"
+      >
+        {{ isFavorite ? "★" : "☆" }}
+      </button>
     </div>
     <div class="launch-content">
       <h2>{{ launch.name }}</h2>
@@ -28,6 +38,7 @@
 
 <script setup>
 import { computed } from "vue";
+import { useFavoritesStore } from "../store/favorites";
 
 const props = defineProps({
   launch: {
@@ -35,6 +46,14 @@ const props = defineProps({
     required: true,
   },
 });
+
+const favoritesStore = useFavoritesStore();
+
+const isFavorite = computed(() => favoritesStore.isFavorite(props.launch.id));
+
+function toggleFavorite() {
+  favoritesStore.toggleFavorite(props.launch.id);
+}
 
 const formattedDate = computed(() => {
   return new Date(props.launch.date_utc).toLocaleDateString("en-GB", {
@@ -66,6 +85,7 @@ const statusClass = computed(() => {
 }
 
 .launch-image {
+  position: relative;
   width: 120px;
   min-width: 120px;
   height: 120px;
@@ -75,6 +95,33 @@ const statusClass = computed(() => {
   background: #f3f4f6;
   border-radius: 8px;
   overflow: hidden;
+}
+
+.favorite-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  color: #9ca3af;
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.favorite-btn:hover {
+  background: white;
+}
+
+.favorite-btn.active {
+  color: #f59e0b;
 }
 
 .launch-image img {
