@@ -88,9 +88,9 @@ const formattedMass = computed(() => {
 .rocket-card {
   display: flex;
   flex-direction: column;
-  background: white;
+  background: var(--color-surface);
   border-radius: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
   overflow: hidden;
 }
 
@@ -100,7 +100,7 @@ const formattedMass = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f3f4f6;
+  background: var(--color-subtle-bg);
   overflow: hidden;
 }
 
@@ -117,7 +117,7 @@ const formattedMass = computed(() => {
 
 .no-image {
   font-size: 14px;
-  color: #777;
+  color: var(--color-text-faint);
   text-align: center;
 }
 
@@ -155,12 +155,12 @@ const formattedMass = computed(() => {
 }
 
 .retired {
-  background: #f3f4f6;
+  background: var(--color-subtle-bg);
   color: #4b5563;
 }
 
 .description {
-  color: #444;
+  color: var(--color-text-muted);
   line-height: 1.5;
   margin-bottom: 16px;
 }
@@ -179,7 +179,7 @@ const formattedMass = computed(() => {
 
 .spec dt {
   font-size: 12px;
-  color: #777;
+  color: var(--color-text-faint);
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }

@@ -48,7 +48,7 @@ onMounted(() => {
 }
 .page-header p {
   margin: 0;
-  color: #666;
+  color: var(--color-text-muted);
 }
 .rockets-grid {
   display: grid;

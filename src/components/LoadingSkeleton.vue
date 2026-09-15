@@ -43,9 +43,9 @@ defineProps({
   display: flex;
   gap: 20px;
   padding: 20px;
-  background: white;
+  background: var(--color-surface);
   border-radius: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
 }
 
 .skeleton-grid.vertical .skeleton-card {
@@ -57,7 +57,7 @@ defineProps({
   min-width: 120px;
   height: 120px;
   border-radius: 8px;
-  background: #e5e7eb;
+  background: var(--color-skeleton-base);
 }
 
 .skeleton-grid.vertical .skeleton-image {
@@ -76,7 +76,7 @@ defineProps({
 .skeleton-line {
   height: 14px;
   border-radius: 4px;
-  background: #e5e7eb;
+  background: var(--color-skeleton-base);
 }
 
 .skeleton-title {
@@ -115,7 +115,7 @@ defineProps({
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.6),
+    var(--color-shimmer),
     transparent
   );
   animation: shimmer 1.5s infinite;

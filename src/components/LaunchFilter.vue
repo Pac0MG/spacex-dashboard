@@ -92,9 +92,9 @@ function updateFavoritesOnly(event) {
 <style scoped>
 .launch-filter {
   padding: 20px;
-  background: white;
+  background: var(--color-surface);
   border-radius: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
   margin-bottom: 20px;
 
   display: flex;
@@ -135,9 +135,11 @@ function updateFavoritesOnly(event) {
 
 .year-row select {
   padding: 8px 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border-strong);
   border-radius: 6px;
   font-size: 14px;
+  background: var(--color-surface);
+  color: var(--color-text);
 }
 
 @media (max-width: 700px) {

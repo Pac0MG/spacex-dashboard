@@ -6,12 +6,19 @@
         <p>Explore launches from SpaceX.</p>
       </div>
 
-      <input
-        v-model="store.search"
-        type="search"
-        placeholder="Search launches..."
-        class="search-input"
-      />
+      <div class="search-group">
+        <select v-model="store.searchType" class="search-type-select">
+          <option value="name">Name</option>
+          <option value="year">Year</option>
+        </select>
+
+        <input
+          v-model="store.search"
+          type="search"
+          :placeholder="searchPlaceholder"
+          class="search-input"
+        />
+      </div>
     </div>
 
     <LaunchFilter
@@ -35,7 +42,7 @@
     <EmptyState
       v-else-if="store.filteredLaunches.length === 0"
       title="There are no results to present"
-      message="Try a new name"
+      :message="emptyStateMessage"
     />
 
     <template v-else>
@@ -83,6 +90,16 @@ const store = useLaunchesStore();
 
 const currentPage = ref(1);
 const launchesPerPage = 8;
+
+const searchPlaceholder = computed(() => {
+  return store.searchType === "year"
+    ? "Search by year..."
+    : "Search by name...";
+});
+
+const emptyStateMessage = computed(() => {
+  return store.searchType === "year" ? "Try a new year" : "Try a new name";
+});
 
 const totalPages = computed(() => {
   return Math.ceil(store.filteredLaunches.length / launchesPerPage);
@@ -136,6 +153,14 @@ watch(
   },
 );
 
+watch(
+  () => store.searchType,
+  () => {
+    store.setSearch("");
+    currentPage.value = 1;
+  },
+);
+
 onMounted(() => {
   loadLaunches();
 });
@@ -156,15 +181,31 @@ onMounted(() => {
 
 .page-header p {
   margin: 0;
-  color: #666;
+  color: var(--color-text-muted);
+}
+
+.search-group {
+  display: flex;
+  gap: 10px;
+}
+
+.search-type-select {
+  padding: 12px 10px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 8px;
+  font-size: 15px;
+  background: var(--color-surface);
+  color: var(--color-text);
 }
 
 .search-input {
   width: 300px;
   padding: 12px 14px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border-strong);
   border-radius: 8px;
   font-size: 16px;
+  background: var(--color-surface);
+  color: var(--color-text);
 }
 
 .launches-grid {
@@ -190,7 +231,8 @@ onMounted(() => {
 }
 
 .pagination button:disabled {
-  background: #ccc;
+  background: var(--color-border-strong);
+  color: var(--color-text-muted);
   cursor: not-allowed;
 }
 
@@ -198,6 +240,10 @@ onMounted(() => {
   .page-header {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .search-group {
+    width: 100%;
   }
 
   .search-input {

@@ -23,9 +23,9 @@ defineEmits(["retry"]);
 .error-message {
   padding: 30px;
   text-align: center;
-  background: white;
+  background: var(--color-surface);
   border-radius: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
 }
 
 .error-message h2 {
@@ -33,7 +33,7 @@ defineEmits(["retry"]);
 }
 
 .error-message p {
-  color: #666;
+  color: var(--color-text-muted);
 }
 
 .error-message button {

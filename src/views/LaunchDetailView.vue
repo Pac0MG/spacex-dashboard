@@ -154,6 +154,10 @@ const formattedDate = computed(() => {
     year: "numeric",
   });
 });
+
+// `success` is null/false for upcoming launches too, so `upcoming` has to be
+// checked first — otherwise a launch that hasn't happened yet gets shown as
+// a failure (same bug that was fixed in LaunchCard.vue).
 const statusLabel = computed(() => {
   if (!launch.value) return "";
   if (launch.value.upcoming) return "Upcoming";
@@ -204,10 +208,10 @@ onMounted(() => {
 }
 
 .detail-page {
-  background: white;
+  background: var(--color-surface);
   padding: 30px;
   border-radius: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
 }
 
 .detail-image {
@@ -216,7 +220,7 @@ onMounted(() => {
   margin-bottom: 25px;
   border-radius: 8px;
   overflow: hidden;
-  background: #f3f4f6;
+  background: var(--color-subtle-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -230,7 +234,7 @@ onMounted(() => {
 
 .detail-image .no-image {
   font-size: 14px;
-  color: #777;
+  color: var(--color-text-faint);
 }
 
 .detail-header {
@@ -252,10 +256,10 @@ onMounted(() => {
 
 .favorite-btn {
   padding: 6px 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
   border-radius: 20px;
-  background: white;
-  color: #666;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
   font-size: 14px;
   cursor: pointer;
   white-space: nowrap;
@@ -272,7 +276,7 @@ onMounted(() => {
 }
 
 .date {
-  color: #666;
+  color: var(--color-text-muted);
 }
 
 .status {
@@ -314,7 +318,7 @@ onMounted(() => {
   flex-direction: column;
   gap: 8px;
   padding: 15px;
-  background: #f3f4f6;
+  background: var(--color-subtle-bg);
   border-radius: 8px;
 }
 

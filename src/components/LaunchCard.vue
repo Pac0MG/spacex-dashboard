@@ -1,12 +1,14 @@
 <template>
   <article class="launch-card">
     <div class="launch-image">
-      <img
-        v-if="launch.links?.patch?.small"
-        :src="launch.links.patch.small"
-        :alt="`Mission patch for ${launch.name}`"
-      />
-      <div v-else class="no-image">No image</div>
+      <RouterLink :to="`/launches/${launch.id}`" class="image-link">
+        <img
+          v-if="launch.links?.patch?.small"
+          :src="launch.links.patch.small"
+          :alt="`Mission patch for ${launch.name}`"
+        />
+        <div v-else class="no-image">No image</div>
+      </RouterLink>
 
       <button
         type="button"
@@ -79,9 +81,9 @@ const statusClass = computed(() => {
   display: flex;
   gap: 20px;
   padding: 20px;
-  background: white;
+  background: var(--color-surface);
   border-radius: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
 }
 
 .launch-image {
@@ -92,7 +94,7 @@ const statusClass = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f3f4f6;
+  background: var(--color-subtle-bg);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -120,6 +122,14 @@ const statusClass = computed(() => {
   background: white;
 }
 
+.image-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
 .favorite-btn.active {
   color: #f59e0b;
 }
@@ -137,7 +147,7 @@ const statusClass = computed(() => {
 
 .no-image {
   font-size: 14px;
-  color: #777;
+  color: var(--color-text-faint);
   text-align: center;
 }
 
@@ -152,7 +162,7 @@ const statusClass = computed(() => {
 
 .launch-date {
   margin: 0 0 10px;
-  color: #666;
+  color: var(--color-text-muted);
 }
 
 .status {

@@ -24,9 +24,9 @@ defineProps({
 .empty-state {
   padding: 50px 20px;
   text-align: center;
-  background: white;
+  background: var(--color-surface);
   border-radius: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
 }
 
 .empty-state h2 {
@@ -35,6 +35,6 @@ defineProps({
 
 .empty-state p {
   margin-bottom: 0;
-  color: #666;
+  color: var(--color-text-muted);
 }
 </style>
