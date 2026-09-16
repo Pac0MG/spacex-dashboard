@@ -10,6 +10,9 @@ it, since the real API has a history of outages.
 - **Launches** — paginated list, search by name or by year (switchable),
   filters by status (success / failure / upcoming), by year, and by
   favorites-only, with loading/error/empty states.
+- **Next launch hero** — featured card at the top of the Launches page
+  showing the closest upcoming launch, with a live countdown (days / hours /
+  minutes / seconds) to liftoff.
 - **Launch detail** — mission info, photo, and the associated rocket's data
   (fetched with a second API call).
 - **Rockets** — list with name, height, mass, country and active status.
@@ -17,8 +20,8 @@ it, since the real API has a history of outages.
   `localStorage`.
 - **Dark mode** — toggle in the header, persisted in `localStorage` (falls
   back to the OS preference on first visit).
-- **Launches per year chart** — bar chart (Chart.js) summarizing launches by
-  year.
+- **404 page** — friendly "not found" screen for any URL that doesn't match a
+  known route, with a link back to Launches.
 
 ## Tech stack
 
