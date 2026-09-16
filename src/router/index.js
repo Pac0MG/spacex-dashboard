@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import LaunchView from "../views/LaunchView.vue";
 import LaunchDetailView from "../views/LaunchDetailView.vue";
 import RocketsView from "../views/RocketsView.vue";
+import NotFoundView from "../views/NotFoundView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -29,6 +30,11 @@ const router = createRouter({
       path: "/rockets",
       name: "rockets",
       component: RocketsView,
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "not-found",
+      component: NotFoundView,
     },
   ],
 });

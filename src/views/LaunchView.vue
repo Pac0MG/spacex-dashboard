@@ -1,5 +1,10 @@
 <template>
   <section>
+    <NextLaunchHero
+      v-if="!store.loading && !store.error && store.nextLaunch"
+      :launch="store.nextLaunch"
+    />
+
     <div class="page-header">
       <div>
         <h1>Launches</h1>
@@ -85,6 +90,7 @@ import LaunchFilter from "../components/LaunchFilter.vue";
 import LoadingSkeleton from "../components/LoadingSkeleton.vue";
 import ErrorMessage from "../components/ErrorMessage.vue";
 import EmptyState from "../components/EmptyState.vue";
+import NextLaunchHero from "../components/NextLaunchHero.vue";
 
 const store = useLaunchesStore();
 

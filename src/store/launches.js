@@ -75,6 +75,21 @@ export const useLaunchesStore = defineStore("launches", () => {
     });
   });
 
+  // Closest upcoming launch that hasn't happened yet, regardless of the
+  // active search/filters - used for the "next launch" hero.
+  const nextLaunch = computed(() => {
+    const now = Date.now();
+
+    const upcoming = launches.value
+      .filter(
+        (launch) =>
+          launch.upcoming && new Date(launch.date_utc).getTime() > now,
+      )
+      .sort((a, b) => new Date(a.date_utc) - new Date(b.date_utc));
+
+    return upcoming[0] || null;
+  });
+
   async function fetchLaunches() {
     if (launches.value.length > 0) {
       return;
@@ -158,6 +173,7 @@ export const useLaunchesStore = defineStore("launches", () => {
     favoritesOnly,
     availableYears,
     filteredLaunches,
+    nextLaunch,
     fetchLaunches,
     fetchLaunch,
     setSearch,
