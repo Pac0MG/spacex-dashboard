@@ -154,6 +154,7 @@ const formattedDate = computed(() => {
     year: "numeric",
   });
 });
+
 const statusLabel = computed(() => {
   if (!launch.value) return "";
   if (launch.value.upcoming) return "Upcoming";
