@@ -9,4 +9,18 @@ const api = axios.create({
   timeout: 10000,
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const message =
+      error.response?.data?.message ||
+      error.message ||
+      "Something went wrong while talking to the API.";
+
+    alert(`API error: ${message}`);
+
+    return Promise.reject(error);
+  },
+);
+
 export default api;

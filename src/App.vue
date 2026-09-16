@@ -90,6 +90,60 @@ const themeStore = useThemeStore();
   --color-text: #222;
   --color-text-muted: #666;
   --color-text-faint: #777;
+
+  /* Brand / accent - used for links, primary buttons, active nav state */
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-accent-contrast: #ffffff;
+
+  /* Status badges (launches, rockets) */
+  --color-status-success-bg: #dcfce7;
+  --color-status-success-text: #166534;
+  --color-status-failure-bg: #fee2e2;
+  --color-status-failure-text: #991b1b;
+  --color-status-upcoming-bg: #dbeafe;
+  --color-status-upcoming-text: #1e40af;
+  --color-status-retired-text: #4b5563;
+
+  /* Favorites */
+  --color-favorite-idle: #9ca3af;
+  --color-favorite-active: #f59e0b;
+  --color-favorite-active-bg: #fffbeb;
+  --color-favorite-active-text: #b45309;
+  --color-favorite-chip-bg: rgba(255, 255, 255, 0.85);
+  --color-favorite-chip-bg-hover: #ffffff;
+
+  /* Header / nav - intentionally fixed dark regardless of theme, like a
+     photo banner, so these don't change under :root.dark */
+  --color-header-bg: #111827;
+  --color-header-overlay-start: rgba(17, 24, 39, 0.55);
+  --color-header-overlay-end: rgba(17, 24, 39, 0.8);
+  --color-header-text: #ffffff;
+  --color-nav-hover-bg: #374151;
+
+  /* Dark-mode toggle switch */
+  --color-toggle-track-bg: rgba(255, 255, 255, 0.18);
+  --color-toggle-track-bg-active: rgba(255, 255, 255, 0.12);
+  --color-toggle-knob-bg: #ffffff;
+  --color-toggle-knob-shadow: rgba(0, 0, 0, 0.35);
+  --color-toggle-icon-color: #1f2937;
+
+  /* 404 page */
+  --color-notfound-gradient-start: var(--color-accent);
+  --color-notfound-gradient-end: #7c3aed;
+
+  /* Next-launch hero - fixed dark banner, same idea as the header */
+  --color-hero-bg-start: #0f172a;
+  --color-hero-bg-mid: #1e3a8a;
+  --color-hero-bg-end: #1d4ed8;
+  --color-hero-text: #f8fafc;
+  --color-hero-eyebrow: #93c5fd;
+  --color-hero-subtext: #cbd5e1;
+  --color-hero-live-dot: #34d399;
+  --color-hero-live-dot-glow: rgba(52, 211, 153, 0.6);
+  --color-hero-panel-bg: rgba(255, 255, 255, 0.1);
+  /* channels only, so the starfield dots can vary their own opacity */
+  --color-hero-star-rgb: 255, 255, 255;
 }
 
 :root.dark {
@@ -119,15 +173,18 @@ body {
 .header {
   width: 100%;
   min-height: 200px;
-  color: white;
+  color: var(--color-header-text);
   display: flex;
   align-items: center;
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: #111827;
+  background-color: var(--color-header-bg);
   background-image:
-    linear-gradient(rgba(17, 24, 39, 0.55), rgba(17, 24, 39, 0.8)),
+    linear-gradient(
+      var(--color-header-overlay-start),
+      var(--color-header-overlay-end)
+    ),
     url("https://assets.science.nasa.gov/content/dam/science/esd/eo/images/imagerecords/150000/150456/iss066e024707_lrg.jpg");
   background-size: cover;
   background-position: center;
@@ -151,7 +208,7 @@ body {
   font-size: 28px;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: white;
+  color: var(--color-header-text);
 }
 
 .nav {
@@ -174,12 +231,12 @@ body {
   width: 42px;
   height: 22px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18);
+  background: var(--color-toggle-track-bg);
   transition: background-color 0.2s;
 }
 
 .theme-toggle.is-dark .theme-track {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--color-toggle-track-bg-active);
 }
 
 .theme-knob {
@@ -189,11 +246,11 @@ body {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #ffffff;
+  background: var(--color-toggle-knob-bg);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 1px 3px var(--color-toggle-knob-shadow);
   transition: transform 0.2s ease;
 }
 
@@ -205,7 +262,7 @@ body {
   position: absolute;
   width: 13px;
   height: 13px;
-  color: #1f2937;
+  color: var(--color-toggle-icon-color);
   transition: opacity 0.15s ease;
 }
 
@@ -226,7 +283,7 @@ body {
 }
 
 .nav a {
-  color: white;
+  color: var(--color-header-text);
   text-decoration: none;
   padding: 14px 22px;
   border-radius: 8px;
@@ -235,11 +292,11 @@ body {
 }
 
 .nav a:hover {
-  background-color: #374151;
+  background-color: var(--color-nav-hover-bg);
 }
 
 .nav a.router-link-active {
-  background-color: #2563eb;
+  background-color: var(--color-accent);
 }
 
 .container {

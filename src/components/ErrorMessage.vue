@@ -40,12 +40,12 @@ defineEmits(["retry"]);
   border: none;
   padding: 10px 18px;
   border-radius: 6px;
-  background: #2563eb;
-  color: white;
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
   cursor: pointer;
 }
 
 .error-message button:hover {
-  background: #1d4ed8;
+  background: var(--color-accent-hover);
 }
 </style>

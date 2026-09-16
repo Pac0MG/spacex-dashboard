@@ -108,8 +108,8 @@ const statusClass = computed(() => {
   padding: 0;
   border: none;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.85);
-  color: #9ca3af;
+  background: var(--color-favorite-chip-bg);
+  color: var(--color-favorite-idle);
   font-size: 16px;
   line-height: 1;
   display: flex;
@@ -119,7 +119,7 @@ const statusClass = computed(() => {
 }
 
 .favorite-btn:hover {
-  background: white;
+  background: var(--color-favorite-chip-bg-hover);
 }
 
 .image-link {
@@ -131,7 +131,7 @@ const statusClass = computed(() => {
 }
 
 .favorite-btn.active {
-  color: #f59e0b;
+  color: var(--color-favorite-active);
 }
 
 .launch-image img {
@@ -174,18 +174,18 @@ const statusClass = computed(() => {
 }
 
 .success {
-  background: #dcfce7;
-  color: #166534;
+  background: var(--color-status-success-bg);
+  color: var(--color-status-success-text);
 }
 
 .failure {
-  background: #fee2e2;
-  color: #991b1b;
+  background: var(--color-status-failure-bg);
+  color: var(--color-status-failure-text);
 }
 
 .upcoming {
-  background: #dbeafe;
-  color: #1e40af;
+  background: var(--color-status-upcoming-bg);
+  color: var(--color-status-upcoming-text);
 }
 
 .details {
@@ -195,7 +195,7 @@ const statusClass = computed(() => {
 .details-link {
   display: inline-block;
   margin-top: 10px;
-  color: #2563eb;
+  color: var(--color-accent);
   text-decoration: none;
   font-weight: bold;
 }

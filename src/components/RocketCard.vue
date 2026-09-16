@@ -150,13 +150,13 @@ const formattedMass = computed(() => {
 }
 
 .active {
-  background: #dcfce7;
-  color: #166534;
+  background: var(--color-status-success-bg);
+  color: var(--color-status-success-text);
 }
 
 .retired {
   background: var(--color-subtle-bg);
-  color: #4b5563;
+  color: var(--color-status-retired-text);
 }
 
 .description {

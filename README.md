@@ -14,7 +14,8 @@ it, since the real API has a history of outages.
   showing the closest upcoming launch, with a live countdown (days / hours /
   minutes / seconds) to liftoff.
 - **Launch detail** — mission info, photo, and the associated rocket's data
-  (fetched with a second API call).
+  (fetched with a second API call), with its own loading skeleton that
+  matches the page's layout instead of reusing the listing's card skeleton.
 - **Rockets** — list with name, height, mass, country and active status.
 - **Favorites** — mark/unmark launches as favorites, persisted in
   `localStorage`.
@@ -126,3 +127,13 @@ Run from `spacex-mock-server/`:
   running and something starts behaving oddly, do a full browser reload
   (not just save-triggered hot reload) — Pinia's hot module reload can
   occasionally get out of sync with newly added state.
+- API errors are caught centrally by an Axios response interceptor
+  (`src/services/api.js`), which shows a generic `alert()` with the error
+  message. This is on top of, not instead of, each store's own
+  loading/error state — that state still drives the empty/error UI and
+  retry buttons; the interceptor just adds one immediate heads-up so
+  failures are never silent.
+- All colors live as CSS custom properties defined once in `App.vue`
+  (`:root` / `:root.dark`) — components never hardcode colors in their
+  `<style>` blocks. This keeps dark mode consistent across the app and
+  means a color tweak only has to happen in one place.

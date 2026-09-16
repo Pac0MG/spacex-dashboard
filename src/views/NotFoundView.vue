@@ -39,7 +39,11 @@
   font-size: 96px;
   line-height: 1;
   letter-spacing: 4px;
-  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  background: linear-gradient(
+    135deg,
+    var(--color-notfound-gradient-start),
+    var(--color-notfound-gradient-end)
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -65,14 +69,14 @@
   display: inline-block;
   padding: 12px 24px;
   border-radius: 8px;
-  background: #2563eb;
-  color: white;
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
   text-decoration: none;
   font-weight: bold;
 }
 
 .not-found-link:hover {
-  background: #1d4ed8;
+  background: var(--color-accent-hover);
 }
 
 @keyframes float {

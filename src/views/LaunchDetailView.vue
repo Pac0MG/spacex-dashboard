@@ -4,7 +4,9 @@
       ← Back to Launches
     </RouterLink>
 
-    <LoadingSkeleton v-if="launchesStore.loading || rocketsStore.loading" />
+    <LaunchDetailSkeleton
+      v-if="launchesStore.loading || rocketsStore.loading"
+    />
 
     <ErrorMessage
       v-else-if="launchesStore.error || rocketsStore.error"
@@ -121,7 +123,7 @@ import { useLaunchesStore } from "../store/launches";
 import { useRocketsStore } from "../store/rockets";
 import { useFavoritesStore } from "../store/favorites";
 
-import LoadingSkeleton from "../components/LoadingSkeleton.vue";
+import LaunchDetailSkeleton from "../components/LaunchDetailSkeleton.vue";
 import ErrorMessage from "../components/ErrorMessage.vue";
 import EmptyState from "../components/EmptyState.vue";
 
@@ -196,7 +198,7 @@ onMounted(() => {
 .back-link {
   display: inline-block;
   margin-bottom: 25px;
-  color: #2563eb;
+  color: var(--color-accent);
   text-decoration: none;
 }
 
@@ -263,13 +265,13 @@ onMounted(() => {
 }
 
 .favorite-btn:hover {
-  border-color: #f59e0b;
+  border-color: var(--color-favorite-active);
 }
 
 .favorite-btn.active {
-  border-color: #f59e0b;
-  color: #b45309;
-  background: #fffbeb;
+  border-color: var(--color-favorite-active);
+  color: var(--color-favorite-active-text);
+  background: var(--color-favorite-active-bg);
 }
 
 .date {
@@ -284,18 +286,18 @@ onMounted(() => {
 }
 
 .success {
-  background: #dcfce7;
-  color: #166534;
+  background: var(--color-status-success-bg);
+  color: var(--color-status-success-text);
 }
 
 .failure {
-  background: #fee2e2;
-  color: #991b1b;
+  background: var(--color-status-failure-bg);
+  color: var(--color-status-failure-text);
 }
 
 .upcoming {
-  background: #dbeafe;
-  color: #1e40af;
+  background: var(--color-status-upcoming-bg);
+  color: var(--color-status-upcoming-text);
 }
 
 .detail-section {
@@ -326,7 +328,7 @@ onMounted(() => {
 }
 
 .links a {
-  color: #2563eb;
+  color: var(--color-accent);
   text-decoration: none;
   font-weight: bold;
 }

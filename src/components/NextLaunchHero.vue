@@ -10,12 +10,14 @@
 
       <div class="hero-main">
         <div class="hero-patch">
-          <img
-            v-if="launch.links?.patch?.small"
-            :src="launch.links.patch.small"
-            :alt="`Mission patch for ${launch.name}`"
-          />
-          <span v-else class="hero-patch-fallback">🚀</span>
+          <RouterLink :to="`/launches/${launch.id}`" class="hero-patch-link">
+            <img
+              v-if="launch.links?.patch?.small"
+              :src="launch.links.patch.small"
+              :alt="`Mission patch for ${launch.name}`"
+            />
+            <span v-else class="hero-patch-fallback">🚀</span>
+          </RouterLink>
         </div>
 
         <div class="hero-info">
@@ -110,8 +112,13 @@ const countdownUnits = computed(() => {
   border-radius: 16px;
   margin-bottom: 30px;
   padding: 28px 36px;
-  color: #f8fafc;
-  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #1d4ed8 100%);
+  color: var(--color-hero-text);
+  background: linear-gradient(
+    135deg,
+    var(--color-hero-bg-start) 0%,
+    var(--color-hero-bg-mid) 55%,
+    var(--color-hero-bg-end) 100%
+  );
 }
 
 .hero-stars {
@@ -120,27 +127,27 @@ const countdownUnits = computed(() => {
   background-image:
     radial-gradient(
       2px 2px at 20px 30px,
-      rgba(255, 255, 255, 0.5),
+      rgba(var(--color-hero-star-rgb), 0.5),
       transparent
     ),
     radial-gradient(
       1.5px 1.5px at 90px 80px,
-      rgba(255, 255, 255, 0.4),
+      rgba(var(--color-hero-star-rgb), 0.4),
       transparent
     ),
     radial-gradient(
       1.5px 1.5px at 160px 40px,
-      rgba(255, 255, 255, 0.35),
+      rgba(var(--color-hero-star-rgb), 0.35),
       transparent
     ),
     radial-gradient(
       2px 2px at 230px 100px,
-      rgba(255, 255, 255, 0.4),
+      rgba(var(--color-hero-star-rgb), 0.4),
       transparent
     ),
     radial-gradient(
       1.5px 1.5px at 300px 20px,
-      rgba(255, 255, 255, 0.3),
+      rgba(var(--color-hero-star-rgb), 0.3),
       transparent
     );
   background-repeat: repeat;
@@ -166,7 +173,7 @@ const countdownUnits = computed(() => {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #34d399;
+  background: var(--color-hero-live-dot);
   animation: pulse 2s infinite;
 }
 
@@ -175,7 +182,7 @@ const countdownUnits = computed(() => {
   font-weight: bold;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: #93c5fd;
+  color: var(--color-hero-eyebrow);
 }
 
 .hero-main {
@@ -190,11 +197,19 @@ const countdownUnits = computed(() => {
   height: 84px;
   min-width: 84px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-hero-panel-bg);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+}
+
+.hero-patch-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
 .hero-patch img {
@@ -214,11 +229,11 @@ const countdownUnits = computed(() => {
 
 .hero-date {
   margin: 0 0 10px;
-  color: #cbd5e1;
+  color: var(--color-hero-subtext);
 }
 
 .hero-link {
-  color: #93c5fd;
+  color: var(--color-hero-eyebrow);
   font-weight: bold;
   text-decoration: none;
 }
@@ -240,7 +255,7 @@ const countdownUnits = computed(() => {
   min-width: 64px;
   padding: 10px 8px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-hero-panel-bg);
 }
 
 .countdown-value {
@@ -254,7 +269,7 @@ const countdownUnits = computed(() => {
   font-size: 11px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: #cbd5e1;
+  color: var(--color-hero-subtext);
 }
 
 .hero-liftoff {
@@ -265,13 +280,13 @@ const countdownUnits = computed(() => {
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6);
+    box-shadow: 0 0 0 0 var(--color-hero-live-dot-glow);
   }
   70% {
-    box-shadow: 0 0 0 8px rgba(52, 211, 153, 0);
+    box-shadow: 0 0 0 8px transparent;
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0);
+    box-shadow: 0 0 0 0 transparent;
   }
 }
 
