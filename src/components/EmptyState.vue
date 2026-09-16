@@ -2,7 +2,7 @@
   <div class="empty-state">
     <h2>{{ title }}</h2>
 
-    <p>{{ message }}</p>
+    <p v-if="message">{{ message }}</p>
   </div>
 </template>
 

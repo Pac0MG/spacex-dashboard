@@ -98,6 +98,7 @@ const searchPlaceholder = computed(() => {
 });
 
 const emptyStateMessage = computed(() => {
+  if (!store.search.trim()) return "";
   return store.searchType === "year" ? "Try a new year" : "Try a new name";
 });
 
