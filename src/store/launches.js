@@ -12,7 +12,7 @@ export const useLaunchesStore = defineStore("launches", () => {
   const loading = ref(false);
   const error = ref(null);
   const search = ref("");
-  const searchType = ref("name"); // "name" | "year"
+  const searchType = ref("name");
 
   const statusFilter = ref({
     success: true,
@@ -49,10 +49,7 @@ export const useLaunchesStore = defineStore("launches", () => {
     }
     return favoritesStore.isFavorite(launch.id);
   }
-  // Same free-text box, two meanings: with searchType "name" the term is
-  // matched against the launch name (as before); with "year" it's matched
-  // against the launch's year instead, so typing "202" finds every launch
-  // from 2020-2029.
+
   function matchesSearchTerm(launch, term) {
     if (!term) {
       return true;

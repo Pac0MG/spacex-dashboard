@@ -154,10 +154,6 @@ const formattedDate = computed(() => {
     year: "numeric",
   });
 });
-
-// `success` is null/false for upcoming launches too, so `upcoming` has to be
-// checked first — otherwise a launch that hasn't happened yet gets shown as
-// a failure (same bug that was fixed in LaunchCard.vue).
 const statusLabel = computed(() => {
   if (!launch.value) return "";
   if (launch.value.upcoming) return "Upcoming";
