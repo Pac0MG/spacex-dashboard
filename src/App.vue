@@ -1,14 +1,20 @@
 <template>
   <header class="header">
     <div class="header-content">
-      <a
-        href="https://www.spacex.com"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="brand"
-      >
-        SpaceX
-      </a>
+      <span class="brand-wrapper">
+        <a
+          href="https://www.spacex.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="brand"
+        >
+          SpaceX
+        </a>
+
+        <span class="brand-tooltip" role="tooltip">
+          https://www.spacex.com
+        </span>
+      </span>
 
       <nav class="nav">
         <GlobalSearch />
@@ -157,6 +163,9 @@ const themeStore = useThemeStore();
   --color-hero-star-rgb: 255, 255, 255;
 
   --color-toast-shadow: rgba(0, 0, 0, 0.15);
+
+  --color-tooltip-bg: rgba(17, 24, 39, 0.95);
+  --color-tooltip-text: #ffffff;
 }
 
 :root.dark {
@@ -216,6 +225,11 @@ body {
   justify-content: space-between;
 }
 
+.brand-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
 .brand {
   font-family: "Orbitron", sans-serif;
   font-weight: 900;
@@ -226,8 +240,37 @@ body {
   text-decoration: none;
 }
 
-.brand:hover {
-  text-decoration: underline;
+.brand-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--color-tooltip-bg);
+  color: var(--color-tooltip-text);
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease,
+    visibility 0.15s;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.brand-wrapper:hover .brand-tooltip,
+.brand:focus-visible ~ .brand-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .nav {
