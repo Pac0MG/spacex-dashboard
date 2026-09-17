@@ -1,7 +1,14 @@
 <template>
   <header class="header">
     <div class="header-content">
-      <span class="brand">SpaceX</span>
+      <a
+        href="https://www.spacex.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="brand"
+      >
+        SpaceX
+      </a>
 
       <nav class="nav">
         <GlobalSearch />
@@ -216,6 +223,11 @@ body {
   letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--color-header-text);
+  text-decoration: none;
+}
+
+.brand:hover {
+  text-decoration: underline;
 }
 
 .nav {
