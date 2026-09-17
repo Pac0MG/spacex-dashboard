@@ -4,6 +4,8 @@
       <span class="brand">SpaceX</span>
 
       <nav class="nav">
+        <GlobalSearch />
+
         <button
           type="button"
           class="theme-toggle"
@@ -75,6 +77,7 @@
 <script setup>
 import { useThemeStore } from "./store/theme";
 import UseToast from "./components/UseToast.vue";
+import GlobalSearch from "./components/GlobalSearch.vue";
 
 const themeStore = useThemeStore();
 </script>
@@ -118,6 +121,12 @@ const themeStore = useThemeStore();
   --color-header-overlay-end: rgba(17, 24, 39, 0.8);
   --color-header-text: #ffffff;
   --color-nav-hover-bg: #374151;
+
+  --color-header-search-bg: rgba(255, 255, 255, 0.12);
+  --color-header-search-bg-hover: rgba(255, 255, 255, 0.2);
+  --color-header-search-kbd-bg: rgba(255, 255, 255, 0.15);
+
+  --color-overlay-bg: rgba(2, 6, 23, 0.6);
 
   --color-toggle-track-bg: rgba(255, 255, 255, 0.18);
   --color-toggle-track-bg-active: rgba(255, 255, 255, 0.12);
