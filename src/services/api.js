@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useToastStore } from "../store/toast";
 
 const baseURL =
   import.meta.env.VITE_API_BASE_URL ||
@@ -14,10 +15,11 @@ api.interceptors.response.use(
   (error) => {
     const message =
       error.response?.data?.message ||
+      error.response?.data?.error ||
       error.message ||
       "Something went wrong while talking to the API.";
 
-    alert(`API error: ${message}`);
+    useToastStore().showError(`API error: ${message}`);
 
     return Promise.reject(error);
   },

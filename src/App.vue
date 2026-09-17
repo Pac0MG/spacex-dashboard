@@ -68,10 +68,13 @@
       </transition>
     </RouterView>
   </main>
+
+  <UseToast />
 </template>
 
 <script setup>
 import { useThemeStore } from "./store/theme";
+import UseToast from "./components/UseToast.vue";
 
 const themeStore = useThemeStore();
 </script>
@@ -91,12 +94,10 @@ const themeStore = useThemeStore();
   --color-text-muted: #666;
   --color-text-faint: #777;
 
-  /* Brand / accent - used for links, primary buttons, active nav state */
   --color-accent: #2563eb;
   --color-accent-hover: #1d4ed8;
   --color-accent-contrast: #ffffff;
 
-  /* Status badges (launches, rockets) */
   --color-status-success-bg: #dcfce7;
   --color-status-success-text: #166534;
   --color-status-failure-bg: #fee2e2;
@@ -105,7 +106,6 @@ const themeStore = useThemeStore();
   --color-status-upcoming-text: #1e40af;
   --color-status-retired-text: #4b5563;
 
-  /* Favorites */
   --color-favorite-idle: #9ca3af;
   --color-favorite-active: #f59e0b;
   --color-favorite-active-bg: #fffbeb;
@@ -113,26 +113,21 @@ const themeStore = useThemeStore();
   --color-favorite-chip-bg: rgba(255, 255, 255, 0.85);
   --color-favorite-chip-bg-hover: #ffffff;
 
-  /* Header / nav - intentionally fixed dark regardless of theme, like a
-     photo banner, so these don't change under :root.dark */
   --color-header-bg: #111827;
   --color-header-overlay-start: rgba(17, 24, 39, 0.55);
   --color-header-overlay-end: rgba(17, 24, 39, 0.8);
   --color-header-text: #ffffff;
   --color-nav-hover-bg: #374151;
 
-  /* Dark-mode toggle switch */
   --color-toggle-track-bg: rgba(255, 255, 255, 0.18);
   --color-toggle-track-bg-active: rgba(255, 255, 255, 0.12);
   --color-toggle-knob-bg: #ffffff;
   --color-toggle-knob-shadow: rgba(0, 0, 0, 0.35);
   --color-toggle-icon-color: #1f2937;
 
-  /* 404 page */
   --color-notfound-gradient-start: var(--color-accent);
   --color-notfound-gradient-end: #7c3aed;
 
-  /* Next-launch hero - fixed dark banner, same idea as the header */
   --color-hero-bg-start: #0f172a;
   --color-hero-bg-mid: #1e3a8a;
   --color-hero-bg-end: #1d4ed8;
@@ -142,8 +137,10 @@ const themeStore = useThemeStore();
   --color-hero-live-dot: #34d399;
   --color-hero-live-dot-glow: rgba(52, 211, 153, 0.6);
   --color-hero-panel-bg: rgba(255, 255, 255, 0.1);
-  /* channels only, so the starfield dots can vary their own opacity */
+
   --color-hero-star-rgb: 255, 255, 255;
+
+  --color-toast-shadow: rgba(0, 0, 0, 0.15);
 }
 
 :root.dark {
@@ -157,6 +154,7 @@ const themeStore = useThemeStore();
   --color-text: #e2e8f0;
   --color-text-muted: #94a3b8;
   --color-text-faint: #94a3b8;
+  --color-toast-shadow: rgba(0, 0, 0, 0.4);
 }
 
 * {
@@ -205,7 +203,7 @@ body {
 .brand {
   font-family: "Orbitron", sans-serif;
   font-weight: 900;
-  font-size: 28px;
+  font-size: 50px;
   letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--color-header-text);

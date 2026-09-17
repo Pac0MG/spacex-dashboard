@@ -75,8 +75,6 @@ export const useLaunchesStore = defineStore("launches", () => {
     });
   });
 
-  // Closest upcoming launch that hasn't happened yet, regardless of the
-  // active search/filters - used for the "next launch" hero.
   const nextLaunch = computed(() => {
     const now = Date.now();
 

@@ -128,9 +128,13 @@ Run from `spacex-mock-server/`:
   (not just save-triggered hot reload) — Pinia's hot module reload can
   occasionally get out of sync with newly added state.
 - API errors are caught centrally by an Axios response interceptor
-  (`src/services/api.js`), which shows a generic `alert()` with the error
-  message. This is on top of, not instead of, each store's own
-  loading/error state — that state still drives the empty/error UI and
+  (`src/services/api.js`), which shows a custom toast notification
+  (`src/store/toast.js` + `src/components/UseToast.vue`) with the error
+  message, centered at the top of the page, auto-dismissing after 5 seconds
+  or closeable manually. It reads both `error.response.data.message` and
+  `error.response.data.error` (the mock server uses `error`), falling back
+  to Axios's own message. This is on top of, not instead of, each store's
+  own loading/error state — that state still drives the empty/error UI and
   retry buttons; the interceptor just adds one immediate heads-up so
   failures are never silent.
 - All colors live as CSS custom properties defined once in `App.vue`
