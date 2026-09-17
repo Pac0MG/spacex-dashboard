@@ -142,7 +142,7 @@ const statusClass = computed(() => {
 }
 
 .launch-image:hover img {
-  transform: scale(1.25);
+  transform: scale(1.5);
 }
 
 .no-image {
