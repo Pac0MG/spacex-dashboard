@@ -77,6 +77,8 @@
         </button>
       </div>
     </template>
+
+    <BackToTopButton />
   </section>
 </template>
 
@@ -91,6 +93,7 @@ import LoadingSkeleton from "../components/LoadingSkeleton.vue";
 import ErrorMessage from "../components/ErrorMessage.vue";
 import EmptyState from "../components/EmptyState.vue";
 import NextLaunchHero from "../components/NextLaunchHero.vue";
+import BackToTopButton from "../components/BackToTopButton.vue";
 
 const store = useLaunchesStore();
 
