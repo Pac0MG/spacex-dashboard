@@ -6,6 +6,11 @@
     <form class="auth-form" novalidate @submit.prevent="submit">
       <p v-if="error" class="auth-error" role="alert">{{ error }}</p>
 
+      <AvatarPicker v-model="form.avatar" />
+      <span v-if="fieldErrors.avatar" class="auth-field-error">
+        {{ fieldErrors.avatar }}
+      </span>
+
       <div class="auth-field" :class="{ 'has-error': fieldErrors.name }">
         <label for="name">Name</label>
         <input
@@ -49,6 +54,22 @@
         </span>
       </div>
 
+      <div class="auth-field" :class="{ 'has-error': fieldErrors.password }">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          v-model="form.password"
+          type="password"
+          autocomplete="new-password"
+          minlength="8"
+          required
+        />
+        <span v-if="fieldErrors.password" class="auth-field-error">
+          {{ fieldErrors.password }}
+        </span>
+        <span v-else class="auth-field-hint">At least 8 characters.</span>
+      </div>
+
       <button type="submit" class="auth-submit" :disabled="loading">
         {{ loading ? "Creating account..." : "Sign up" }}
       </button>
@@ -67,6 +88,7 @@
 import { reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import AuthCard from "../components/AuthCard.vue";
+import AvatarPicker from "../components/AvatarPicker.vue";
 import { useAuthStore } from "../store/auth";
 import { safeRedirect } from "../router/redirect";
 
@@ -74,7 +96,13 @@ const route = useRoute();
 const router = useRouter();
 const auth = useAuthStore();
 
-const form = reactive({ name: "", username: "", email: "" });
+const form = reactive({
+  name: "",
+  username: "",
+  email: "",
+  password: "",
+  avatar: null,
+});
 const fieldErrors = ref({});
 const error = ref("");
 const loading = ref(false);
@@ -85,11 +113,7 @@ async function submit() {
 
   loading.value = true;
   try {
-    await auth.signup({
-      name: form.name,
-      username: form.username,
-      email: form.email,
-    });
+    await auth.signup({ ...form });
     router.replace(safeRedirect(route.query.redirect));
   } catch (err) {
     fieldErrors.value = err.fieldErrors || {};

@@ -29,6 +29,20 @@ db.exec(`
   );
 `);
 
+// Databases created before passwords / photos existed lack these columns.
+// Accounts from that time have no password_hash and can't log in.
+const userColumns = db
+  .prepare("PRAGMA table_info(users)")
+  .all()
+  .map((column) => column.name);
+
+if (!userColumns.includes("password_hash")) {
+  db.exec("ALTER TABLE users ADD COLUMN password_hash TEXT");
+}
+if (!userColumns.includes("avatar")) {
+  db.exec("ALTER TABLE users ADD COLUMN avatar TEXT");
+}
+
 export function findUserByIdentifier(identifier) {
   return db
     .prepare("SELECT * FROM users WHERE email = ? OR username = ?")
@@ -45,10 +59,13 @@ export function findConflicts({ username, email }) {
     .all(username, email);
 }
 
-export function createUser({ name, username, email }) {
+export function createUser({ name, username, email, passwordHash, avatar }) {
   const result = db
-    .prepare("INSERT INTO users (name, username, email) VALUES (?, ?, ?)")
-    .run(name, username, email);
+    .prepare(
+      `INSERT INTO users (name, username, email, password_hash, avatar)
+       VALUES (?, ?, ?, ?, ?)`,
+    )
+    .run(name, username, email, passwordHash, avatar);
   return findUserById(Number(result.lastInsertRowid));
 }
 

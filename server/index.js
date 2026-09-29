@@ -9,14 +9,22 @@ import {
   findUserByIdentifier,
   findUserBySession,
 } from "./db.js";
+import { hashPassword, verifyPassword } from "./password.js";
 
 const PORT = Number(process.env.PORT) || 3001;
 const SESSION_COOKIE = "session";
 const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;
-const MAX_BODY_BYTES = 10 * 1024;
+// Sign-up carries the profile photo (a small base64 image), so it needs more
+// room than a plain JSON body.
+const MAX_BODY_BYTES = 400 * 1024;
+const MAX_AVATAR_CHARS = 300 * 1024;
+const PASSWORD_MIN = 8;
+const PASSWORD_MAX = 128;
 
 const USERNAME_RE = /^[a-zA-Z0-9_.-]{3,30}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Raster formats only (no SVG), since the value ends up in an <img src>.
+const AVATAR_RE = /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/]+=*$/;
 
 function publicUser(user) {
   return {
@@ -24,6 +32,7 @@ function publicUser(user) {
     name: user.name,
     username: user.username,
     email: user.email,
+    avatar: user.avatar,
   };
 }
 
@@ -93,6 +102,8 @@ async function signup(req, res) {
   const name = asString(body.name);
   const username = asString(body.username);
   const email = asString(body.email).toLowerCase();
+  const password = typeof body.password === "string" ? body.password : "";
+  const avatar = typeof body.avatar === "string" ? body.avatar : null;
 
   const errors = {};
   if (name.length < 2 || name.length > 100) {
@@ -104,6 +115,12 @@ async function signup(req, res) {
   }
   if (!EMAIL_RE.test(email) || email.length > 254) {
     errors.email = "Enter a valid email address.";
+  }
+  if (password.length < PASSWORD_MIN || password.length > PASSWORD_MAX) {
+    errors.password = `Password must be between ${PASSWORD_MIN} and ${PASSWORD_MAX} characters.`;
+  }
+  if (avatar && (avatar.length > MAX_AVATAR_CHARS || !AVATAR_RE.test(avatar))) {
+    errors.avatar = "The photo must be a JPEG, PNG or WebP image.";
   }
 
   if (Object.keys(errors).length) {
@@ -124,7 +141,12 @@ async function signup(req, res) {
   }
 
   try {
-    startSession(res, createUser({ name, username, email }), 201);
+    const passwordHash = await hashPassword(password);
+    startSession(
+      res,
+      createUser({ name, username, email, passwordHash, avatar: avatar || null }),
+      201,
+    );
   } catch (err) {
     // Lost a race with a concurrent signup on the UNIQUE constraints.
     if (String(err.message).includes("UNIQUE")) {
@@ -137,16 +159,23 @@ async function signup(req, res) {
 async function login(req, res) {
   const body = await readJson(req);
   const identifier = asString(body.identifier);
+  const password = typeof body.password === "string" ? body.password : "";
 
-  if (!identifier) {
-    return send(res, 400, { error: "Enter your email or username." });
+  if (!identifier || !password) {
+    return send(res, 400, {
+      error: "Enter your email or username and your password.",
+    });
   }
 
   const user = findUserByIdentifier(identifier);
-  if (!user) {
-    return send(res, 404, {
-      error: "No account found with that email or username.",
-    });
+  const valid = await verifyPassword(
+    password.slice(0, PASSWORD_MAX),
+    user?.password_hash,
+  );
+
+  // One message for both cases so the form doesn't reveal which accounts exist.
+  if (!user || !valid) {
+    return send(res, 401, { error: "Incorrect email, username or password." });
   }
 
   startSession(res, user, 200);

@@ -5,6 +5,7 @@ import RocketsView from "../views/RocketsView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
 import LoginView from "../views/LoginView.vue";
 import SignupView from "../views/SignupView.vue";
+import ProfileView from "../views/ProfileView.vue";
 import { useAuthStore } from "../store/auth";
 
 const router = createRouter({
@@ -45,6 +46,11 @@ const router = createRouter({
       path: "/rockets",
       name: "rockets",
       component: RocketsView,
+    },
+    {
+      path: "/profile",
+      name: "profile",
+      component: ProfileView,
     },
     {
       path: "/:pathMatch(.*)*",

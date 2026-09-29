@@ -30,8 +30,8 @@ export const useAuthStore = defineStore("auth", () => {
     return initPromise;
   }
 
-  async function login(identifier) {
-    const data = await loginRequest(identifier);
+  async function login(identifier, password) {
+    const data = await loginRequest(identifier, password);
     user.value = data.user;
   }
 

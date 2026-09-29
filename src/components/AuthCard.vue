@@ -80,6 +80,11 @@ defineProps({
   color: var(--color-status-failure-text);
 }
 
+.auth-field-hint {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
 .auth-error {
   padding: 10px 14px;
   border-radius: 8px;

@@ -36,10 +36,10 @@ export function fetchCurrentUser() {
   return request("/me");
 }
 
-export function loginRequest(identifier) {
+export function loginRequest(identifier, password) {
   return request("/login", {
     method: "POST",
-    body: JSON.stringify({ identifier }),
+    body: JSON.stringify({ identifier, password }),
   });
 }
 

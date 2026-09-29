@@ -1,5 +1,8 @@
 <template>
-  <AuthCard title="Log in" subtitle="Use your email or username to continue.">
+  <AuthCard
+    title="Log in"
+    subtitle="Use your email or username and password to continue."
+  >
     <form class="auth-form" novalidate @submit.prevent="submit">
       <p v-if="error" class="auth-error" role="alert">{{ error }}</p>
 
@@ -11,6 +14,17 @@
           type="text"
           autocomplete="username"
           autofocus
+          required
+        />
+      </div>
+
+      <div class="auth-field">
+        <label for="password">Password</label>
+        <input
+          id="password"
+          v-model="password"
+          type="password"
+          autocomplete="current-password"
           required
         />
       </div>
@@ -41,20 +55,21 @@ const router = useRouter();
 const auth = useAuthStore();
 
 const identifier = ref("");
+const password = ref("");
 const error = ref("");
 const loading = ref(false);
 
 async function submit() {
   error.value = "";
 
-  if (!identifier.value.trim()) {
-    error.value = "Enter your email or username.";
+  if (!identifier.value.trim() || !password.value) {
+    error.value = "Enter your email or username and your password.";
     return;
   }
 
   loading.value = true;
   try {
-    await auth.login(identifier.value.trim());
+    await auth.login(identifier.value.trim(), password.value);
     router.replace(safeRedirect(route.query.redirect));
   } catch (err) {
     error.value = err.message;

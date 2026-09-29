@@ -74,9 +74,18 @@
 
           <RouterLink to="/rockets"> Rockets </RouterLink>
 
-          <span class="nav-user" :title="authStore.user.email">
-            {{ authStore.user.username }}
-          </span>
+          <RouterLink
+            to="/profile"
+            class="nav-profile"
+            :title="`${authStore.user.username} — view profile`"
+          >
+            <UserAvatar
+              :src="authStore.user.avatar"
+              :name="authStore.user.name"
+              :size="40"
+            />
+            <span class="nav-user">{{ authStore.user.username }}</span>
+          </RouterLink>
 
           <button type="button" class="nav-logout" @click="logout">
             Log out
@@ -101,6 +110,7 @@
 import { useThemeStore } from "./store/theme";
 import UseToast from "./components/UseToast.vue";
 import GlobalSearch from "./components/GlobalSearch.vue";
+import UserAvatar from "./components/UserAvatar.vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "./store/auth";
 
@@ -380,10 +390,16 @@ body {
   background-color: var(--color-accent);
 }
 
+.nav a.nav-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px 6px 6px;
+  border-radius: 999px;
+}
+
 .nav-user {
-  padding: 0 6px;
   font-size: 15px;
-  opacity: 0.85;
 }
 
 .nav-logout {
@@ -458,6 +474,11 @@ body {
     text-align: center;
     padding: 10px 12px;
     font-size: 15px;
+  }
+
+  .nav a.nav-profile {
+    flex: 0 0 auto;
+    padding: 4px;
   }
 
   .nav-user {
