@@ -21,6 +21,11 @@ it, since the real API has a history of outages.
   `localStorage`.
 - **Dark mode** — toggle in the header, persisted in `localStorage` (falls
   back to the OS preference on first visit).
+- **Login / sign up** — accounts stored in SQLite. Sign up with a name,
+  username and email; log in with either your email or your username. Every
+  page (Launches, Rockets, launch details…) requires a session — visitors are
+  sent to the login page first and returned to where they were headed after
+  logging in.
 - **404 page** — friendly "not found" screen for any URL that doesn't match a
   known route, with a link back to Launches.
 
@@ -34,7 +39,8 @@ it, since the real API has a history of outages.
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) 18 or later (includes npm)
+- [Node.js](https://nodejs.org/) 22.13 or later (includes npm) — the auth
+  API uses Node's built-in `node:sqlite` module
 
 ## Project structure
 
@@ -66,8 +72,9 @@ spacex-mock-server/    local mock of the SpaceX API v4 (sibling project)
 
 ## Running the project
 
-The frontend needs an API to talk to, so start the mock server **first**,
-then the frontend, each in its own terminal.
+The frontend needs two backends: the mock SpaceX API and the auth API (login
+/ sign up, backed by SQLite). Start both **first**, then the frontend, each in
+its own terminal.
 
 **1. Start the mock API** (from `spacex-mock-server/`):
 
@@ -78,7 +85,17 @@ npm start
 Runs at `http://localhost:4010`. Add `?fail=true` to any endpoint to
 simulate a `500` error (useful for testing the app's error/retry state).
 
-**2. Start the frontend** (from `spacex-dashboard/`):
+**2. Start the auth API** (from `spacex-dashboard/`):
+
+```bash
+npm run server
+```
+
+Runs at `http://localhost:3001`. The SQLite database is created
+automatically at `server/data/app.db` (git-ignored). The Vite dev server
+proxies `/api` to it, so the session cookie stays same-origin.
+
+**3. Start the frontend** (from `spacex-dashboard/`):
 
 ```bash
 npm run dev
@@ -109,6 +126,8 @@ Run from `spacex-dashboard/`:
 | Command           | Description                                |
 | ----------------- | ------------------------------------------ |
 | `npm run dev`     | Starts the Vite dev server with hot reload |
+| `npm run server`  | Starts the auth API (SQLite) on port 3001  |
+| `npm run server:dev` | Same, but restarts on file changes      |
 | `npm run build`   | Builds the app for production into `dist/` |
 | `npm run preview` | Serves the production build locally        |
 
@@ -120,6 +139,13 @@ Run from `spacex-mock-server/`:
 | `npm run dev` | Same, but restarts automatically on file changes |
 
 ## Notes
+
+- **Login has no password.** As specified, you log in with just an email or
+  username, so anyone who knows a username can log in as that user. Treat it
+  as a gate for the UI, not real security; add a password (hashed with
+  `crypto.scrypt`) to the `users` table before using it for anything
+  sensitive. Sessions are random tokens stored in SQLite and sent as an
+  HttpOnly cookie (7-day expiry).
 
 - Favorites and the dark mode preference are stored in the browser's
   `localStorage`, so they're per-browser and won't sync across devices.

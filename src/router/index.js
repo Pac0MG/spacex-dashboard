@@ -3,6 +3,9 @@ import LaunchView from "../views/LaunchView.vue";
 import LaunchDetailView from "../views/LaunchDetailView.vue";
 import RocketsView from "../views/RocketsView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
+import LoginView from "../views/LoginView.vue";
+import SignupView from "../views/SignupView.vue";
+import { useAuthStore } from "../store/auth";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -15,6 +18,18 @@ const router = createRouter({
     {
       path: "/",
       redirect: "/launches",
+    },
+    {
+      path: "/login",
+      name: "login",
+      component: LoginView,
+      meta: { guestOnly: true },
+    },
+    {
+      path: "/signup",
+      name: "signup",
+      component: SignupView,
+      meta: { guestOnly: true },
     },
     {
       path: "/launches",
@@ -37,6 +52,25 @@ const router = createRouter({
       component: NotFoundView,
     },
   ],
+});
+
+// Every route requires a session except the ones marked `guestOnly`.
+router.beforeEach(async (to) => {
+  const auth = useAuthStore();
+  await auth.init();
+
+  if (to.meta.guestOnly) {
+    return auth.isAuthenticated ? { name: "launches" } : true;
+  }
+
+  if (!auth.isAuthenticated) {
+    return {
+      name: "login",
+      query: to.fullPath === "/" ? {} : { redirect: to.fullPath },
+    };
+  }
+
+  return true;
 });
 
 export default router;

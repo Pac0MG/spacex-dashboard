@@ -17,7 +17,7 @@
       </span>
 
       <nav class="nav">
-        <GlobalSearch />
+        <GlobalSearch v-if="authStore.isAuthenticated" />
 
         <button
           type="button"
@@ -69,9 +69,19 @@
           </span>
         </button>
 
-        <RouterLink to="/launches"> Launches </RouterLink>
+        <template v-if="authStore.isAuthenticated">
+          <RouterLink to="/launches"> Launches </RouterLink>
 
-        <RouterLink to="/rockets"> Rockets </RouterLink>
+          <RouterLink to="/rockets"> Rockets </RouterLink>
+
+          <span class="nav-user" :title="authStore.user.email">
+            {{ authStore.user.username }}
+          </span>
+
+          <button type="button" class="nav-logout" @click="logout">
+            Log out
+          </button>
+        </template>
       </nav>
     </div>
   </header>
@@ -91,8 +101,17 @@
 import { useThemeStore } from "./store/theme";
 import UseToast from "./components/UseToast.vue";
 import GlobalSearch from "./components/GlobalSearch.vue";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "./store/auth";
 
 const themeStore = useThemeStore();
+const authStore = useAuthStore();
+const router = useRouter();
+
+async function logout() {
+  await authStore.logout();
+  router.push({ name: "login" });
+}
 </script>
 
 <style>
@@ -361,6 +380,27 @@ body {
   background-color: var(--color-accent);
 }
 
+.nav-user {
+  padding: 0 6px;
+  font-size: 15px;
+  opacity: 0.85;
+}
+
+.nav-logout {
+  padding: 14px 22px;
+  border: 1px solid var(--color-header-text);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-header-text);
+  font-size: 17px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.nav-logout:hover {
+  background-color: var(--color-nav-hover-bg);
+}
+
 .container {
   width: 100%;
   max-width: 1400px;
@@ -416,6 +456,16 @@ body {
   .nav a {
     flex: 1;
     text-align: center;
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+
+  .nav-user {
+    display: none;
+  }
+
+  .nav-logout {
+    flex: 1;
     padding: 10px 12px;
     font-size: 15px;
   }
