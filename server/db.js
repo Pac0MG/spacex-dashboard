@@ -27,6 +27,14 @@ db.exec(`
     user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     expires_at INTEGER NOT NULL
   );
+
+  -- Only a SHA-256 of the emailed token is stored, so a leaked database can't
+  -- be used to reset anyone's password.
+  CREATE TABLE IF NOT EXISTS password_resets (
+    token_hash TEXT PRIMARY KEY,
+    user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    expires_at INTEGER NOT NULL
+  );
 `);
 
 // Databases created before passwords / photos existed lack these columns.
@@ -47,6 +55,10 @@ export function findUserByIdentifier(identifier) {
   return db
     .prepare("SELECT * FROM users WHERE email = ? OR username = ?")
     .get(identifier, identifier);
+}
+
+export function findUserByEmail(email) {
+  return db.prepare("SELECT * FROM users WHERE email = ?").get(email);
 }
 
 export function findUserById(id) {
@@ -101,4 +113,35 @@ export function deleteSession(token) {
 
 export function deleteExpiredSessions() {
   db.prepare("DELETE FROM sessions WHERE expires_at <= ?").run(Date.now());
+  db.prepare("DELETE FROM password_resets WHERE expires_at <= ?").run(Date.now());
+}
+
+// A user has at most one live reset link: asking again replaces the old one.
+export function createPasswordReset(userId, tokenHash, expiresAt) {
+  db.prepare("DELETE FROM password_resets WHERE user_id = ?").run(userId);
+  db.prepare(
+    "INSERT INTO password_resets (token_hash, user_id, expires_at) VALUES (?, ?, ?)",
+  ).run(tokenHash, userId, expiresAt);
+}
+
+export function findPasswordReset(tokenHash) {
+  return db
+    .prepare(
+      "SELECT user_id, expires_at FROM password_resets WHERE token_hash = ? AND expires_at > ?",
+    )
+    .get(tokenHash, Date.now());
+}
+
+export function findPasswordResetByUser(userId) {
+  return db
+    .prepare("SELECT expires_at FROM password_resets WHERE user_id = ? AND expires_at > ?")
+    .get(userId, Date.now());
+}
+
+// Sets the new password, burns every reset link and signs the account out
+// everywhere, since whoever knew the old password may still hold a session.
+export function resetPassword(userId, passwordHash) {
+  db.prepare("UPDATE users SET password_hash = ? WHERE id = ?").run(passwordHash, userId);
+  db.prepare("DELETE FROM password_resets WHERE user_id = ?").run(userId);
+  db.prepare("DELETE FROM sessions WHERE user_id = ?").run(userId);
 }

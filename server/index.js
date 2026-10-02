@@ -1,16 +1,22 @@
 import { createServer } from "node:http";
-import { randomBytes } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import {
+  createPasswordReset,
   createSession,
   createUser,
   deleteExpiredSessions,
   deleteSession,
   deleteUser,
   findConflicts,
+  findPasswordReset,
+  findPasswordResetByUser,
+  findUserByEmail,
   findUserByIdentifier,
   findUserBySession,
+  resetPassword,
   updateAvatar,
 } from "./db.js";
+import { sendPasswordResetEmail } from "./mail.js";
 import { hashPassword, verifyPassword } from "./password.js";
 
 const PORT = Number(process.env.PORT) || 3001;
@@ -22,6 +28,12 @@ const MAX_BODY_BYTES = 400 * 1024;
 const MAX_AVATAR_CHARS = 300 * 1024;
 const PASSWORD_MIN = 8;
 const PASSWORD_MAX = 128;
+const RESET_TTL_MS = 60 * 60 * 1000;
+// Asking again within this window doesn't send another email.
+const RESET_COOLDOWN_MS = 60 * 1000;
+// Where the emailed link points. Set APP_URL when the app isn't on Vite's
+// default port; never derive it from the request's Host header.
+const APP_URL = (process.env.APP_URL || "http://localhost:5173").replace(/\/$/, "");
 
 const USERNAME_RE = /^[a-zA-Z0-9_.-]{3,30}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -191,6 +203,61 @@ async function login(req, res) {
   startSession(res, user, 200);
 }
 
+function hashToken(token) {
+  return createHash("sha256").update(token).digest("hex");
+}
+
+// Always answers the same way, whether or not the email has an account, so the
+// form can't be used to find out who is registered.
+async function forgotPassword(req, res) {
+  const body = await readJson(req);
+  const email = asString(body.email).toLowerCase();
+
+  if (!EMAIL_RE.test(email) || email.length > 254) {
+    return send(res, 400, { error: "Enter a valid email address." });
+  }
+
+  const user = findUserByEmail(email);
+  const recent = user && findPasswordResetByUser(user.id);
+  const requestedJustNow =
+    recent && recent.expires_at > Date.now() + RESET_TTL_MS - RESET_COOLDOWN_MS;
+
+  if (user && !requestedJustNow) {
+    const token = randomBytes(32).toString("hex");
+    createPasswordReset(user.id, hashToken(token), Date.now() + RESET_TTL_MS);
+
+    // Not awaited: the reply must not take longer for real accounts.
+    sendPasswordResetEmail({
+      to: user.email,
+      name: user.name,
+      link: `${APP_URL}/reset-password?token=${token}`,
+    }).catch((err) => console.error("Could not send reset email:", err.message));
+  }
+
+  send(res, 200, { ok: true });
+}
+
+async function resetPasswordHandler(req, res) {
+  const body = await readJson(req);
+  const token = typeof body.token === "string" ? body.token : "";
+  const password = typeof body.password === "string" ? body.password : "";
+
+  if (password.length < PASSWORD_MIN || password.length > PASSWORD_MAX) {
+    const message = `Password must be between ${PASSWORD_MIN} and ${PASSWORD_MAX} characters.`;
+    return send(res, 400, { error: message, errors: { password: message } });
+  }
+
+  const reset = token && findPasswordReset(hashToken(token));
+  if (!reset) {
+    return send(res, 400, {
+      error: "This reset link is invalid or has expired. Request a new one.",
+    });
+  }
+
+  resetPassword(reset.user_id, await hashPassword(password));
+  send(res, 200, { ok: true });
+}
+
 function logout(req, res) {
   const token = getCookie(req, SESSION_COOKIE);
   if (token) deleteSession(token);
@@ -244,6 +311,8 @@ async function deleteAccount(req, res) {
 const routes = {
   "POST /api/auth/signup": signup,
   "POST /api/auth/login": login,
+  "POST /api/auth/forgot-password": forgotPassword,
+  "POST /api/auth/reset-password": resetPasswordHandler,
   "POST /api/auth/logout": logout,
   "GET /api/auth/me": me,
   "PUT /api/auth/me/avatar": changeAvatar,

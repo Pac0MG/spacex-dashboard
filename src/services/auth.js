@@ -50,6 +50,20 @@ export function signupRequest(payload) {
   });
 }
 
+export function forgotPasswordRequest(email) {
+  return request("/forgot-password", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+}
+
+export function resetPasswordRequest(token, password) {
+  return request("/reset-password", {
+    method: "POST",
+    body: JSON.stringify({ token, password }),
+  });
+}
+
 export function logoutRequest() {
   return request("/logout", { method: "POST" });
 }

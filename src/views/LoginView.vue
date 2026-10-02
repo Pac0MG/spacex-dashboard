@@ -4,6 +4,9 @@
     subtitle="Use your email or username and password to continue."
   >
     <form class="auth-form" novalidate @submit.prevent="submit">
+      <p v-if="route.query.reset" class="auth-success" role="status">
+        Password changed. Log in with your new password.
+      </p>
       <p v-if="error" class="auth-error" role="alert">{{ error }}</p>
 
       <div class="auth-field">
@@ -27,6 +30,12 @@
           autocomplete="current-password"
           required
         />
+        <RouterLink
+          class="auth-forgot"
+          :to="{ name: 'forgot-password', query: redirectQuery }"
+        >
+          Forgot your password?
+        </RouterLink>
       </div>
 
       <button type="submit" class="auth-submit" :disabled="loading">
@@ -44,7 +53,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import AuthCard from "../components/AuthCard.vue";
 import { useAuthStore } from "../store/auth";
@@ -53,6 +62,11 @@ import { safeRedirect } from "../router/redirect";
 const route = useRoute();
 const router = useRouter();
 const auth = useAuthStore();
+
+// Keep the post-login destination if the user detours through "forgot password".
+const redirectQuery = computed(() =>
+  route.query.redirect ? { redirect: route.query.redirect } : {},
+);
 
 const identifier = ref("");
 const password = ref("");

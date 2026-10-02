@@ -6,6 +6,8 @@ import NotFoundView from "../views/NotFoundView.vue";
 import LoginView from "../views/LoginView.vue";
 import SignupView from "../views/SignupView.vue";
 import ProfileView from "../views/ProfileView.vue";
+import ForgotPasswordView from "../views/ForgotPasswordView.vue";
+import ResetPasswordView from "../views/ResetPasswordView.vue";
 import { useAuthStore } from "../store/auth";
 
 const router = createRouter({
@@ -30,6 +32,18 @@ const router = createRouter({
       path: "/signup",
       name: "signup",
       component: SignupView,
+      meta: { guestOnly: true },
+    },
+    {
+      path: "/forgot-password",
+      name: "forgot-password",
+      component: ForgotPasswordView,
+      meta: { guestOnly: true },
+    },
+    {
+      path: "/reset-password",
+      name: "reset-password",
+      component: ResetPasswordView,
       meta: { guestOnly: true },
     },
     {

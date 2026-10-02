@@ -93,6 +93,20 @@ defineProps({
   color: var(--color-status-failure-text);
 }
 
+.auth-success {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  background: var(--color-status-success-bg);
+  color: var(--color-status-success-text);
+}
+
+.auth-forgot {
+  align-self: flex-end;
+  font-size: 13px;
+  color: var(--color-accent);
+}
+
 .auth-submit {
   padding: 13px 24px;
   border: none;
