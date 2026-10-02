@@ -1,10 +1,12 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import {
+  deleteAccountRequest,
   fetchCurrentUser,
   loginRequest,
   logoutRequest,
   signupRequest,
+  updateAvatarRequest,
 } from "../services/auth";
 
 export const useAuthStore = defineStore("auth", () => {
@@ -48,5 +50,26 @@ export const useAuthStore = defineStore("auth", () => {
     }
   }
 
-  return { user, isReady, isAuthenticated, init, login, signup, logout };
+  // Pass null to remove the photo.
+  async function updateAvatar(avatar) {
+    const data = await updateAvatarRequest(avatar);
+    user.value = data.user;
+  }
+
+  async function deleteAccount(password) {
+    await deleteAccountRequest(password);
+    user.value = null;
+  }
+
+  return {
+    user,
+    isReady,
+    isAuthenticated,
+    init,
+    login,
+    signup,
+    logout,
+    updateAvatar,
+    deleteAccount,
+  };
 });

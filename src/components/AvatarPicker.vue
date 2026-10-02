@@ -4,6 +4,7 @@
       type="button"
       class="avatar-picker-circle"
       aria-label="Choose a profile photo"
+      :disabled="disabled"
       @click="input.click()"
     >
       <img v-if="modelValue" :src="modelValue" alt="Profile photo preview" />
@@ -32,11 +33,12 @@
       v-if="modelValue"
       type="button"
       class="avatar-picker-remove"
+      :disabled="disabled"
       @click="remove"
     >
       Remove photo
     </button>
-    <span v-else class="avatar-picker-hint">Optional</span>
+    <span v-else-if="hint" class="avatar-picker-hint">{{ hint }}</span>
 
     <span v-if="error" class="auth-field-error" role="alert">{{ error }}</span>
 
@@ -55,6 +57,9 @@ import { ref } from "vue";
 
 defineProps({
   modelValue: { type: String, default: null },
+  disabled: { type: Boolean, default: false },
+  // Small caption shown under the circle while there's no photo.
+  hint: { type: String, default: "Optional" },
 });
 const emit = defineEmits(["update:modelValue"]);
 
@@ -191,8 +196,14 @@ function remove() {
   cursor: pointer;
 }
 
-.avatar-picker-remove:hover {
+.avatar-picker-remove:hover:not(:disabled) {
   text-decoration: underline;
+}
+
+.avatar-picker-circle:disabled,
+.avatar-picker-remove:disabled {
+  opacity: 0.6;
+  cursor: wait;
 }
 
 .avatar-picker-hint {

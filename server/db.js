@@ -69,6 +69,16 @@ export function createUser({ name, username, email, passwordHash, avatar }) {
   return findUserById(Number(result.lastInsertRowid));
 }
 
+export function updateAvatar(id, avatar) {
+  db.prepare("UPDATE users SET avatar = ? WHERE id = ?").run(avatar, id);
+  return findUserById(id);
+}
+
+// Sessions go with the user (ON DELETE CASCADE).
+export function deleteUser(id) {
+  db.prepare("DELETE FROM users WHERE id = ?").run(id);
+}
+
 export function createSession(token, userId, expiresAt) {
   db.prepare(
     "INSERT INTO sessions (token, user_id, expires_at) VALUES (?, ?, ?)",

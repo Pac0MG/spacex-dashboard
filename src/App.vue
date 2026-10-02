@@ -373,16 +373,29 @@ body {
   opacity: 1;
 }
 
-.nav a {
-  color: var(--color-header-text);
-  text-decoration: none;
-  padding: 14px 22px;
+/* Launches, Rockets, profile and Log out share one button shape. */
+.nav a,
+.nav-logout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 48px;
+  padding: 0 22px;
+  border: none;
   border-radius: 8px;
+  background: transparent;
+  color: var(--color-header-text);
+  font-family: inherit;
   font-size: 17px;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
   transition: background-color 0.2s;
 }
 
-.nav a:hover {
+.nav a:hover,
+.nav-logout:hover {
   background-color: var(--color-nav-hover-bg);
 }
 
@@ -391,30 +404,12 @@ body {
 }
 
 .nav a.nav-profile {
-  display: flex;
-  align-items: center;
   gap: 10px;
-  padding: 6px 14px 6px 6px;
-  border-radius: 999px;
+  padding: 0 22px 0 4px;
 }
 
 .nav-user {
-  font-size: 15px;
-}
-
-.nav-logout {
-  padding: 14px 22px;
-  border: 1px solid var(--color-header-text);
-  border-radius: 8px;
-  background: transparent;
-  color: var(--color-header-text);
   font-size: 17px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.nav-logout:hover {
-  background-color: var(--color-nav-hover-bg);
 }
 
 .container {
@@ -469,10 +464,10 @@ body {
     gap: 8px;
   }
 
-  .nav a {
+  .nav a,
+  .nav-logout {
     flex: 1;
-    text-align: center;
-    padding: 10px 12px;
+    padding: 0 12px;
     font-size: 15px;
   }
 
@@ -483,12 +478,6 @@ body {
 
   .nav-user {
     display: none;
-  }
-
-  .nav-logout {
-    flex: 1;
-    padding: 10px 12px;
-    font-size: 15px;
   }
 
   .container {

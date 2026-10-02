@@ -53,3 +53,17 @@ export function signupRequest(payload) {
 export function logoutRequest() {
   return request("/logout", { method: "POST" });
 }
+
+export function updateAvatarRequest(avatar) {
+  return request("/me/avatar", {
+    method: "PUT",
+    body: JSON.stringify({ avatar }),
+  });
+}
+
+export function deleteAccountRequest(password) {
+  return request("/me", {
+    method: "DELETE",
+    body: JSON.stringify({ password }),
+  });
+}

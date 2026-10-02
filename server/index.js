@@ -5,9 +5,11 @@ import {
   createUser,
   deleteExpiredSessions,
   deleteSession,
+  deleteUser,
   findConflicts,
   findUserByIdentifier,
   findUserBySession,
+  updateAvatar,
 } from "./db.js";
 import { hashPassword, verifyPassword } from "./password.js";
 
@@ -97,6 +99,14 @@ function asString(value) {
   return typeof value === "string" ? value.trim() : "";
 }
 
+// Returns an error message, or null when the photo is acceptable.
+function avatarError(avatar) {
+  if (avatar.length > MAX_AVATAR_CHARS || !AVATAR_RE.test(avatar)) {
+    return "The photo must be a JPEG, PNG or WebP image.";
+  }
+  return null;
+}
+
 async function signup(req, res) {
   const body = await readJson(req);
   const name = asString(body.name);
@@ -119,8 +129,8 @@ async function signup(req, res) {
   if (password.length < PASSWORD_MIN || password.length > PASSWORD_MAX) {
     errors.password = `Password must be between ${PASSWORD_MIN} and ${PASSWORD_MAX} characters.`;
   }
-  if (avatar && (avatar.length > MAX_AVATAR_CHARS || !AVATAR_RE.test(avatar))) {
-    errors.avatar = "The photo must be a JPEG, PNG or WebP image.";
+  if (avatar && avatarError(avatar)) {
+    errors.avatar = avatarError(avatar);
   }
 
   if (Object.keys(errors).length) {
@@ -187,11 +197,48 @@ function logout(req, res) {
   send(res, 200, { ok: true }, { "Set-Cookie": sessionCookie("", 0) });
 }
 
-function me(req, res) {
+// Replies 401 and returns null when there's no valid session.
+function requireUser(req, res) {
   const token = getCookie(req, SESSION_COOKIE);
   const user = token && findUserBySession(token);
-  if (!user) return send(res, 401, { error: "Not authenticated." });
-  send(res, 200, { user: publicUser(user) });
+  if (!user) send(res, 401, { error: "Not authenticated." });
+  return user || null;
+}
+
+function me(req, res) {
+  const user = requireUser(req, res);
+  if (user) send(res, 200, { user: publicUser(user) });
+}
+
+// Body: { avatar: "data:image/..." } to set the photo, or { avatar: null } to
+// remove it. Nothing else about the account can be changed here.
+async function changeAvatar(req, res) {
+  const user = requireUser(req, res);
+  if (!user) return;
+
+  const body = await readJson(req);
+  const avatar = typeof body.avatar === "string" ? body.avatar : null;
+
+  const error = avatar && avatarError(avatar);
+  if (error) return send(res, 400, { error, errors: { avatar: error } });
+
+  send(res, 200, { user: publicUser(updateAvatar(user.id, avatar)) });
+}
+
+// The password is asked for again so a hijacked session can't wipe the account.
+async function deleteAccount(req, res) {
+  const user = requireUser(req, res);
+  if (!user) return;
+
+  const body = await readJson(req);
+  const password = typeof body.password === "string" ? body.password : "";
+
+  if (!(await verifyPassword(password.slice(0, PASSWORD_MAX), user.password_hash))) {
+    return send(res, 403, { error: "Incorrect password." });
+  }
+
+  deleteUser(user.id);
+  send(res, 200, { ok: true }, { "Set-Cookie": sessionCookie("", 0) });
 }
 
 const routes = {
@@ -199,6 +246,8 @@ const routes = {
   "POST /api/auth/login": login,
   "POST /api/auth/logout": logout,
   "GET /api/auth/me": me,
+  "PUT /api/auth/me/avatar": changeAvatar,
+  "DELETE /api/auth/me": deleteAccount,
 };
 
 const server = createServer(async (req, res) => {
