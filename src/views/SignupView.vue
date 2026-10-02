@@ -56,10 +56,9 @@
 
       <div class="auth-field" :class="{ 'has-error': fieldErrors.password }">
         <label for="password">Password</label>
-        <input
+        <PasswordInput
           id="password"
           v-model="form.password"
-          type="password"
           autocomplete="new-password"
           minlength="8"
           required
@@ -89,6 +88,7 @@ import { reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import AuthCard from "../components/AuthCard.vue";
 import AvatarPicker from "../components/AvatarPicker.vue";
+import PasswordInput from "../components/PasswordInput.vue";
 import { useAuthStore } from "../store/auth";
 import { safeRedirect } from "../router/redirect";
 

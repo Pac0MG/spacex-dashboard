@@ -11,10 +11,9 @@
 
       <div class="auth-field" :class="{ 'has-error': fieldError }">
         <label for="password">New password</label>
-        <input
+        <PasswordInput
           id="password"
           v-model="password"
-          type="password"
           autocomplete="new-password"
           minlength="8"
           autofocus
@@ -26,10 +25,9 @@
 
       <div class="auth-field" :class="{ 'has-error': confirmError }">
         <label for="confirm">Confirm new password</label>
-        <input
+        <PasswordInput
           id="confirm"
           v-model="confirm"
-          type="password"
           autocomplete="new-password"
           required
         />
@@ -55,6 +53,7 @@
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import AuthCard from "../components/AuthCard.vue";
+import PasswordInput from "../components/PasswordInput.vue";
 import { resetPasswordRequest } from "../services/auth";
 
 const route = useRoute();

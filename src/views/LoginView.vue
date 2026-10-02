@@ -23,10 +23,9 @@
 
       <div class="auth-field">
         <label for="password">Password</label>
-        <input
+        <PasswordInput
           id="password"
           v-model="password"
-          type="password"
           autocomplete="current-password"
           required
         />
@@ -56,6 +55,7 @@
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import AuthCard from "../components/AuthCard.vue";
+import PasswordInput from "../components/PasswordInput.vue";
 import { useAuthStore } from "../store/auth";
 import { safeRedirect } from "../router/redirect";
 
