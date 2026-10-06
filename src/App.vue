@@ -107,12 +107,12 @@
 </template>
 
 <script setup>
-import { useThemeStore } from "./store/theme";
-import UseToast from "./components/UseToast.vue";
-import GlobalSearch from "./components/GlobalSearch.vue";
-import UserAvatar from "./components/UserAvatar.vue";
+import { useThemeStore } from "./store/ui/theme";
+import UseToast from "./components/layout/UseToast.vue";
+import GlobalSearch from "./components/layout/GlobalSearch.vue";
+import UserAvatar from "./components/user/UserAvatar.vue";
 import { useRouter } from "vue-router";
-import { useAuthStore } from "./store/auth";
+import { useAuthStore } from "./store/auth/auth";
 
 const themeStore = useThemeStore();
 const authStore = useAuthStore();

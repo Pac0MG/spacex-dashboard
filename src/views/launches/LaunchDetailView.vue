@@ -119,13 +119,13 @@
 import { computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 
-import { useLaunchesStore } from "../store/launches";
-import { useRocketsStore } from "../store/rockets";
-import { useFavoritesStore } from "../store/favorites";
+import { useLaunchesStore } from "../../store/launches/launches";
+import { useRocketsStore } from "../../store/rockets/rockets";
+import { useFavoritesStore } from "../../store/launches/favorites";
 
-import LaunchDetailSkeleton from "../components/LaunchDetailSkeleton.vue";
-import ErrorMessage from "../components/ErrorMessage.vue";
-import EmptyState from "../components/EmptyState.vue";
+import LaunchDetailSkeleton from "../../components/launches/LaunchDetailSkeleton.vue";
+import ErrorMessage from "../../components/common/ErrorMessage.vue";
+import EmptyState from "../../components/common/EmptyState.vue";
 
 const route = useRoute();
 

@@ -1,14 +1,14 @@
 import { createRouter, createWebHistory } from "vue-router";
-import LaunchView from "../views/LaunchView.vue";
-import LaunchDetailView from "../views/LaunchDetailView.vue";
-import RocketsView from "../views/RocketsView.vue";
-import NotFoundView from "../views/NotFoundView.vue";
-import LoginView from "../views/LoginView.vue";
-import SignupView from "../views/SignupView.vue";
-import ProfileView from "../views/ProfileView.vue";
-import ForgotPasswordView from "../views/ForgotPasswordView.vue";
-import ResetPasswordView from "../views/ResetPasswordView.vue";
-import { useAuthStore } from "../store/auth";
+import LaunchView from "../views/launches/LaunchView.vue";
+import LaunchDetailView from "../views/launches/LaunchDetailView.vue";
+import RocketsView from "../views/rockets/RocketsView.vue";
+import NotFoundView from "../views/errors/NotFoundView.vue";
+import LoginView from "../views/auth/LoginView.vue";
+import SignupView from "../views/auth/SignupView.vue";
+import ProfileView from "../views/user/ProfileView.vue";
+import ForgotPasswordView from "../views/auth/ForgotPasswordView.vue";
+import ResetPasswordView from "../views/auth/ResetPasswordView.vue";
+import { useAuthStore } from "../store/auth/auth";
 
 const router = createRouter({
   history: createWebHistory(),

@@ -89,13 +89,13 @@
 <script setup>
 import { reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import AuthCard from "../components/AuthCard.vue";
-import AvatarPicker from "../components/AvatarPicker.vue";
-import PasswordInput from "../components/PasswordInput.vue";
-import PasswordRequirements from "../components/PasswordRequirements.vue";
-import { useAuthStore } from "../store/auth";
-import { meetsPasswordRules } from "../utils/passwordRules";
-import { safeRedirect } from "../router/redirect";
+import AuthCard from "../../components/auth/AuthCard.vue";
+import AvatarPicker from "../../components/user/AvatarPicker.vue";
+import PasswordInput from "../../components/auth/PasswordInput.vue";
+import PasswordRequirements from "../../components/auth/PasswordRequirements.vue";
+import { useAuthStore } from "../../store/auth/auth";
+import { meetsPasswordRules } from "../../utils/passwordRules";
+import { safeRedirect } from "../../router/redirect";
 
 const route = useRoute();
 const router = useRouter();

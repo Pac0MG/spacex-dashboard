@@ -85,15 +85,15 @@
 <script setup>
 import { computed, onMounted, ref, watch } from "vue";
 
-import { useLaunchesStore } from "../store/launches";
+import { useLaunchesStore } from "../../store/launches/launches";
 
-import LaunchCard from "../components/LaunchCard.vue";
-import LaunchFilter from "../components/LaunchFilter.vue";
-import LoadingSkeleton from "../components/LoadingSkeleton.vue";
-import ErrorMessage from "../components/ErrorMessage.vue";
-import EmptyState from "../components/EmptyState.vue";
-import NextLaunchHero from "../components/NextLaunchHero.vue";
-import BackToTopButton from "../components/BackToTopButton.vue";
+import LaunchCard from "../../components/launches/LaunchCard.vue";
+import LaunchFilter from "../../components/launches/LaunchFilter.vue";
+import LoadingSkeleton from "../../components/common/LoadingSkeleton.vue";
+import ErrorMessage from "../../components/common/ErrorMessage.vue";
+import EmptyState from "../../components/common/EmptyState.vue";
+import NextLaunchHero from "../../components/launches/NextLaunchHero.vue";
+import BackToTopButton from "../../components/layout/BackToTopButton.vue";
 
 const store = useLaunchesStore();
 

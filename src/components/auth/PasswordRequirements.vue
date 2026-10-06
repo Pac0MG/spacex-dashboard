@@ -27,7 +27,7 @@
 
 <script setup>
 import { computed } from "vue";
-import { PASSWORD_RULES } from "../utils/passwordRules";
+import { PASSWORD_RULES } from "../../utils/passwordRules";
 
 const props = defineProps({
   password: { type: String, default: "" },

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useToastStore } from "../store/toast";
+import { useToastStore } from "../store/ui/toast";
 
 const baseURL =
   import.meta.env.VITE_API_BASE_URL ||

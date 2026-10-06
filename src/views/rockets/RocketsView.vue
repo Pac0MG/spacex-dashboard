@@ -26,11 +26,11 @@
 </template>
 <script setup>
 import { onMounted } from "vue";
-import { useRocketsStore } from "../store/rockets";
-import RocketCard from "../components/RocketCard.vue";
-import LoadingSkeleton from "../components/LoadingSkeleton.vue";
-import ErrorMessage from "../components/ErrorMessage.vue";
-import EmptyState from "../components/EmptyState.vue";
+import { useRocketsStore } from "../../store/rockets/rockets";
+import RocketCard from "../../components/rockets/RocketCard.vue";
+import LoadingSkeleton from "../../components/common/LoadingSkeleton.vue";
+import ErrorMessage from "../../components/common/ErrorMessage.vue";
+import EmptyState from "../../components/common/EmptyState.vue";
 const store = useRocketsStore();
 async function loadRockets() {
   await store.fetchRockets();

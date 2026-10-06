@@ -54,10 +54,10 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import AuthCard from "../components/AuthCard.vue";
-import PasswordInput from "../components/PasswordInput.vue";
-import { useAuthStore } from "../store/auth";
-import { safeRedirect } from "../router/redirect";
+import AuthCard from "../../components/auth/AuthCard.vue";
+import PasswordInput from "../../components/auth/PasswordInput.vue";
+import { useAuthStore } from "../../store/auth/auth";
+import { safeRedirect } from "../../router/redirect";
 
 const route = useRoute();
 const router = useRouter();

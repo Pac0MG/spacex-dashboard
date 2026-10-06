@@ -55,11 +55,11 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import AuthCard from "../components/AuthCard.vue";
-import PasswordInput from "../components/PasswordInput.vue";
-import PasswordRequirements from "../components/PasswordRequirements.vue";
-import { resetPasswordRequest } from "../services/auth";
-import { meetsPasswordRules } from "../utils/passwordRules";
+import AuthCard from "../../components/auth/AuthCard.vue";
+import PasswordInput from "../../components/auth/PasswordInput.vue";
+import PasswordRequirements from "../../components/auth/PasswordRequirements.vue";
+import { resetPasswordRequest } from "../../services/auth";
+import { meetsPasswordRules } from "../../utils/passwordRules";
 
 const route = useRoute();
 const router = useRouter();

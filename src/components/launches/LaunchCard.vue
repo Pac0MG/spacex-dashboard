@@ -40,7 +40,7 @@
 
 <script setup>
 import { computed } from "vue";
-import { useFavoritesStore } from "../store/favorites";
+import { useFavoritesStore } from "../../store/launches/favorites";
 
 const props = defineProps({
   launch: {

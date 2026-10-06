@@ -39,8 +39,8 @@
 <script setup>
 import { ref } from "vue";
 import { useRoute } from "vue-router";
-import AuthCard from "../components/AuthCard.vue";
-import { forgotPasswordRequest } from "../services/auth";
+import AuthCard from "../../components/auth/AuthCard.vue";
+import { forgotPasswordRequest } from "../../services/auth";
 
 const route = useRoute();
 

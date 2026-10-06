@@ -149,13 +149,13 @@ Run from `spacex-mock-server/`:
 
 - Favorites and the dark mode preference are stored in the browser's
   `localStorage`, so they're per-browser and won't sync across devices.
-- If you change store files (`src/store/*.js`) while the dev server is
+- If you change store files (`src/store/**/*.js`) while the dev server is
   running and something starts behaving oddly, do a full browser reload
   (not just save-triggered hot reload) — Pinia's hot module reload can
   occasionally get out of sync with newly added state.
 - API errors are caught centrally by an Axios response interceptor
   (`src/services/api.js`), which shows a custom toast notification
-  (`src/store/toast.js` + `src/components/UseToast.vue`) with the error
+  (`src/store/ui/toast.js` + `src/components/layout/UseToast.vue`) with the error
   message, centered at the top of the page, auto-dismissing after 5 seconds
   or closeable manually. It reads both `error.response.data.message` and
   `error.response.data.error` (the mock server uses `error`), falling back

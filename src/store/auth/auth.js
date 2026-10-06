@@ -7,7 +7,7 @@ import {
   logoutRequest,
   signupRequest,
   updateAvatarRequest,
-} from "../services/auth";
+} from "../../services/auth";
 
 export const useAuthStore = defineStore("auth", () => {
   const user = ref(null);

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ref, watch } from "vue";
-import { useAuthStore } from "./auth";
+import { useAuthStore } from "../auth/auth";
 
 const STORAGE_PREFIX = "spacex-dashboard:favorite-launches:";
 

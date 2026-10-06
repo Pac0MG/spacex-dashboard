@@ -120,8 +120,8 @@
 <script setup>
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
-import { useLaunchesStore } from "../store/launches";
-import { useRocketsStore } from "../store/rockets";
+import { useLaunchesStore } from "../../store/launches/launches";
+import { useRocketsStore } from "../../store/rockets/rockets";
 
 const router = useRouter();
 const launchesStore = useLaunchesStore();

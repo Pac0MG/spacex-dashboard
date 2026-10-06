@@ -119,15 +119,15 @@
 <script setup>
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import AvatarPicker from "../components/AvatarPicker.vue";
-import EmptyState from "../components/EmptyState.vue";
-import ErrorMessage from "../components/ErrorMessage.vue";
-import LaunchCard from "../components/LaunchCard.vue";
-import LoadingSkeleton from "../components/LoadingSkeleton.vue";
-import { useAuthStore } from "../store/auth";
-import { useFavoritesStore } from "../store/favorites";
-import { useLaunchesStore } from "../store/launches";
-import { useToastStore } from "../store/toast";
+import AvatarPicker from "../../components/user/AvatarPicker.vue";
+import EmptyState from "../../components/common/EmptyState.vue";
+import ErrorMessage from "../../components/common/ErrorMessage.vue";
+import LaunchCard from "../../components/launches/LaunchCard.vue";
+import LoadingSkeleton from "../../components/common/LoadingSkeleton.vue";
+import { useAuthStore } from "../../store/auth/auth";
+import { useFavoritesStore } from "../../store/launches/favorites";
+import { useLaunchesStore } from "../../store/launches/launches";
+import { useToastStore } from "../../store/ui/toast";
 
 const router = useRouter();
 const auth = useAuthStore();
