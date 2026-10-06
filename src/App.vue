@@ -151,6 +151,9 @@ async function logout() {
   --color-status-upcoming-text: #1e40af;
   --color-status-retired-text: #4b5563;
 
+  --color-requirement-unmet: #b91c1c;
+  --color-requirement-met: #15803d;
+
   --color-favorite-idle: #9ca3af;
   --color-favorite-active: #f59e0b;
   --color-favorite-active-bg: #fffbeb;
@@ -209,6 +212,8 @@ async function logout() {
   --color-text-muted: #94a3b8;
   --color-text-faint: #94a3b8;
   --color-toast-shadow: rgba(0, 0, 0, 0.4);
+  --color-requirement-unmet: #f87171;
+  --color-requirement-met: #4ade80;
 }
 
 * {

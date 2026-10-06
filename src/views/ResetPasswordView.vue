@@ -15,12 +15,15 @@
           id="password"
           v-model="password"
           autocomplete="new-password"
-          minlength="8"
+          minlength="9"
           autofocus
           required
         />
         <span v-if="fieldError" class="auth-field-error">{{ fieldError }}</span>
-        <span v-else class="auth-field-hint">At least 8 characters.</span>
+        <PasswordRequirements v-if="password" :password="password" />
+        <span v-else class="auth-field-hint">
+          At least 9 characters, 1 uppercase letter and 1 special character.
+        </span>
       </div>
 
       <div class="auth-field" :class="{ 'has-error': confirmError }">
@@ -54,7 +57,9 @@ import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import AuthCard from "../components/AuthCard.vue";
 import PasswordInput from "../components/PasswordInput.vue";
+import PasswordRequirements from "../components/PasswordRequirements.vue";
 import { resetPasswordRequest } from "../services/auth";
+import { meetsPasswordRules } from "../utils/passwordRules";
 
 const route = useRoute();
 const router = useRouter();
@@ -75,8 +80,8 @@ async function submit() {
   fieldError.value = "";
   confirmError.value = "";
 
-  if (password.value.length < 8) {
-    fieldError.value = "Password must be at least 8 characters.";
+  if (!meetsPasswordRules(password.value)) {
+    fieldError.value = "The password doesn't meet all the requirements.";
     return;
   }
   if (password.value !== confirm.value) {

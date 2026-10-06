@@ -26,7 +26,7 @@ const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 // room than a plain JSON body.
 const MAX_BODY_BYTES = 400 * 1024;
 const MAX_AVATAR_CHARS = 300 * 1024;
-const PASSWORD_MIN = 8;
+const PASSWORD_MIN = 9;
 const PASSWORD_MAX = 128;
 const RESET_TTL_MS = 60 * 60 * 1000;
 // Asking again within this window doesn't send another email.
@@ -39,6 +39,19 @@ const USERNAME_RE = /^[a-zA-Z0-9_.-]{3,30}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // Raster formats only (no SVG), since the value ends up in an <img src>.
 const AVATAR_RE = /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/]+=*$/;
+
+// Same rules as src/utils/passwordRules.js, which shows them while typing.
+function passwordError(password) {
+  if (
+    password.length < PASSWORD_MIN ||
+    password.length > PASSWORD_MAX ||
+    !/\p{Lu}/u.test(password) ||
+    !/[^\p{L}\p{N}\s]/u.test(password)
+  ) {
+    return `Password must be ${PASSWORD_MIN}-${PASSWORD_MAX} characters and include at least 1 uppercase letter and 1 special character.`;
+  }
+  return null;
+}
 
 function publicUser(user) {
   return {
@@ -138,8 +151,8 @@ async function signup(req, res) {
   if (!EMAIL_RE.test(email) || email.length > 254) {
     errors.email = "Enter a valid email address.";
   }
-  if (password.length < PASSWORD_MIN || password.length > PASSWORD_MAX) {
-    errors.password = `Password must be between ${PASSWORD_MIN} and ${PASSWORD_MAX} characters.`;
+  if (passwordError(password)) {
+    errors.password = passwordError(password);
   }
   if (avatar && avatarError(avatar)) {
     errors.avatar = avatarError(avatar);
@@ -242,8 +255,8 @@ async function resetPasswordHandler(req, res) {
   const token = typeof body.token === "string" ? body.token : "";
   const password = typeof body.password === "string" ? body.password : "";
 
-  if (password.length < PASSWORD_MIN || password.length > PASSWORD_MAX) {
-    const message = `Password must be between ${PASSWORD_MIN} and ${PASSWORD_MAX} characters.`;
+  const message = passwordError(password);
+  if (message) {
     return send(res, 400, { error: message, errors: { password: message } });
   }
 

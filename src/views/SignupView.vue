@@ -60,13 +60,16 @@
           id="password"
           v-model="form.password"
           autocomplete="new-password"
-          minlength="8"
+          minlength="9"
           required
         />
         <span v-if="fieldErrors.password" class="auth-field-error">
           {{ fieldErrors.password }}
         </span>
-        <span v-else class="auth-field-hint">At least 8 characters.</span>
+        <PasswordRequirements v-if="form.password" :password="form.password" />
+        <span v-else class="auth-field-hint">
+          At least 9 characters, 1 uppercase letter and 1 special character.
+        </span>
       </div>
 
       <button type="submit" class="auth-submit" :disabled="loading">
@@ -89,7 +92,9 @@ import { useRoute, useRouter } from "vue-router";
 import AuthCard from "../components/AuthCard.vue";
 import AvatarPicker from "../components/AvatarPicker.vue";
 import PasswordInput from "../components/PasswordInput.vue";
+import PasswordRequirements from "../components/PasswordRequirements.vue";
 import { useAuthStore } from "../store/auth";
+import { meetsPasswordRules } from "../utils/passwordRules";
 import { safeRedirect } from "../router/redirect";
 
 const route = useRoute();
@@ -110,6 +115,11 @@ const loading = ref(false);
 async function submit() {
   error.value = "";
   fieldErrors.value = {};
+
+  if (!meetsPasswordRules(form.password)) {
+    fieldErrors.value = { password: "The password doesn't meet all the requirements." };
+    return;
+  }
 
   loading.value = true;
   try {
