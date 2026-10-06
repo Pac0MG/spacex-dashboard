@@ -72,6 +72,19 @@
         </span>
       </div>
 
+      <div class="auth-field" :class="{ 'has-error': fieldErrors.confirm }">
+        <label for="confirm">Confirm password</label>
+        <PasswordInput
+          id="confirm"
+          v-model="confirm"
+          autocomplete="new-password"
+          required
+        />
+        <span v-if="fieldErrors.confirm" class="auth-field-error">
+          {{ fieldErrors.confirm }}
+        </span>
+      </div>
+
       <button type="submit" class="auth-submit" :disabled="loading">
         {{ loading ? "Creating account..." : "Sign up" }}
       </button>
@@ -108,6 +121,8 @@ const form = reactive({
   password: "",
   avatar: null,
 });
+// Kept out of `form` so it isn't sent to the server.
+const confirm = ref("");
 const fieldErrors = ref({});
 const error = ref("");
 const loading = ref(false);
@@ -118,6 +133,10 @@ async function submit() {
 
   if (!meetsPasswordRules(form.password)) {
     fieldErrors.value = { password: "The password doesn't meet all the requirements." };
+    return;
+  }
+  if (form.password !== confirm.value) {
+    fieldErrors.value = { confirm: "The passwords don't match." };
     return;
   }
 
