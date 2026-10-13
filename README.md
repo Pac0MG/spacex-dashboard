@@ -22,10 +22,16 @@ it, since the real API has a history of outages.
 - **Dark mode** — toggle in the header, persisted in `localStorage` (falls
   back to the OS preference on first visit).
 - **Login / sign up** — accounts stored in SQLite. Sign up with a name,
-  username and email; log in with either your email or your username. Every
-  page (Launches, Rockets, launch details…) requires a session — visitors are
-  sent to the login page first and returned to where they were headed after
-  logging in.
+  username, email, password and an optional profile photo; log in with your
+  email or username plus your password. Passwords need at least 9 characters,
+  1 uppercase letter and 1 special character (shown as a live checklist while
+  typing). Every page (Launches, Rockets, launch details…) requires a session
+  — visitors are sent to the login page first and returned to where they were
+  headed after logging in.
+- **Forgot / reset password** — request a reset link by email; the link is
+  valid for 1 hour and lets you choose a new password.
+- **Profile** — change or remove your profile photo, or delete your account
+  (asks for your password to confirm).
 - **404 page** — friendly "not found" screen for any URL that doesn't match a
   known route, with a link back to Launches.
 
@@ -119,6 +125,25 @@ VITE_API_BASE_URL=https://api.spacexdata.com/v4
 Without this file, it defaults to the local mock server
 (`http://<host>:4010/v4`).
 
+The auth API reads `spacex-dashboard/.env` (git-ignored) if it exists:
+
+```bash
+# Send password reset emails over SMTP. Without SMTP_HOST, the reset link is
+# printed to the auth API's console instead — enough for local development.
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=you@example.com
+SMTP_PASS=your-app-password
+MAIL_FROM=you@example.com
+
+# Base URL used in reset links (default: http://localhost:5173)
+APP_URL=http://localhost:5173
+
+# Optional overrides
+PORT=3001                     # auth API port (also update the proxy in vite.config.js)
+DB_PATH=server/data/app.db    # SQLite database file
+```
+
 ## Available scripts
 
 Run from `spacex-dashboard/`:
@@ -140,12 +165,16 @@ Run from `spacex-mock-server/`:
 
 ## Notes
 
-- **Login has no password.** As specified, you log in with just an email or
-  username, so anyone who knows a username can log in as that user. Treat it
-  as a gate for the UI, not real security; add a password (hashed with
-  `crypto.scrypt`) to the `users` table before using it for anything
-  sensitive. Sessions are random tokens stored in SQLite and sent as an
-  HttpOnly cookie (7-day expiry).
+- **Auth.** Passwords are hashed with `crypto.scrypt`. Sessions are random
+  tokens stored in SQLite and sent as an HttpOnly cookie (7-day expiry).
+  Login and "forgot password" give the same answer whether or not an account
+  exists, so they can't be used to find out who is registered. Only a SHA-256
+  hash of each reset token is stored; resetting a password signs the account
+  out everywhere. Accounts created before passwords were added have no
+  password and can't log in — sign up again.
+- The password rules are checked on the server (`server/index.js`) and
+  mirrored in `src/utils/passwordRules.js` for the live checklist — change
+  both together.
 
 - Favorites and the dark mode preference are stored in the browser's
   `localStorage`, so they're per-browser and won't sync across devices.
