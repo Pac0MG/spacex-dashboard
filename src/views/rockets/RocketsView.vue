@@ -1,19 +1,19 @@
 <template>
   <section>
     <div class="page-header">
-      <h1>Rockets</h1>
-      <p>Explore rockets from SpaceX.</p>
+      <h1>{{ t("rockets.title") }}</h1>
+      <p>{{ t("rockets.subtitle") }}</p>
     </div>
     <LoadingSkeleton v-if="store.loading" variant="vertical" :count="6" />
     <ErrorMessage
       v-else-if="store.error"
-      :message="store.error"
+      :message="t(store.error)"
       @retry="loadRockets"
     />
     <EmptyState
       v-else-if="store.rockets.length === 0"
-      title="No rockets found"
-      message="There are no rockets to present."
+      :title="t('rockets.emptyTitle')"
+      :message="t('rockets.emptyMessage')"
     />
     <div v-else class="rockets-grid">
       <RocketCard
@@ -26,11 +26,13 @@
 </template>
 <script setup>
 import { onMounted } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRocketsStore } from "../../store/rockets/rockets";
 import RocketCard from "../../components/rockets/RocketCard.vue";
 import LoadingSkeleton from "../../components/common/LoadingSkeleton.vue";
 import ErrorMessage from "../../components/common/ErrorMessage.vue";
 import EmptyState from "../../components/common/EmptyState.vue";
+const { t } = useI18n();
 const store = useRocketsStore();
 async function loadRockets() {
   await store.fetchRockets();

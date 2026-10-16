@@ -5,16 +5,16 @@
         <img
           v-if="launch.links?.patch?.small"
           :src="launch.links.patch.small"
-          :alt="`Mission patch for ${launch.name}`"
+          :alt="t('common.missionPatch', { name: launch.name })"
         />
-        <div v-else class="no-image">No image</div>
+        <div v-else class="no-image">{{ t("common.noImage") }}</div>
       </RouterLink>
 
       <button
         type="button"
         class="favorite-btn"
         :class="{ active: isFavorite }"
-        :aria-label="isFavorite ? 'Remove from favorites' : 'Add to favorites'"
+        :aria-label="isFavorite ? t('favorites.remove') : t('favorites.add')"
         @click="toggleFavorite"
       >
         {{ isFavorite ? "★" : "☆" }}
@@ -32,7 +32,7 @@
         {{ launch.details }}
       </p>
       <RouterLink class="details-link" :to="`/launches/${launch.id}`">
-        View details
+        {{ t("launches.viewDetails") }}
       </RouterLink>
     </div>
   </article>
@@ -40,6 +40,7 @@
 
 <script setup>
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { useFavoritesStore } from "../../store/launches/favorites";
 
 const props = defineProps({
@@ -49,6 +50,7 @@ const props = defineProps({
   },
 });
 
+const { t, d } = useI18n();
 const favoritesStore = useFavoritesStore();
 
 const isFavorite = computed(() => favoritesStore.isFavorite(props.launch.id));
@@ -58,16 +60,12 @@ function toggleFavorite() {
 }
 
 const formattedDate = computed(() => {
-  return new Date(props.launch.date_utc).toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+  return d(new Date(props.launch.date_utc), "date");
 });
 
 const statusLabel = computed(() => {
-  if (props.launch.upcoming) return "Upcoming";
-  return props.launch.success ? "Success" : "Failure";
+  if (props.launch.upcoming) return t("status.upcoming");
+  return props.launch.success ? t("status.success") : t("status.failure");
 });
 
 const statusClass = computed(() => {

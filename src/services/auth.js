@@ -1,15 +1,22 @@
-const UNREACHABLE_MESSAGE =
-  "Can't reach the auth server. Make sure it's running (npm run server).";
+import { i18n } from "../i18n";
+
+function unreachableError() {
+  return new Error(i18n.global.t("errors.authUnreachable"));
+}
 
 // Plain fetch on purpose: auth errors are shown inline on the login / sign-up
 // forms, not through the toast interceptor used for the SpaceX API client.
 async function request(path, options = {}) {
   const response = await fetch(`/api/auth${path}`, {
     credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
+    // The server answers its error messages (and the reset email) in this language.
+    headers: {
+      "Content-Type": "application/json",
+      "Accept-Language": i18n.global.locale.value,
+    },
     ...options,
   }).catch(() => {
-    throw new Error(UNREACHABLE_MESSAGE);
+    throw unreachableError();
   });
 
   const data = await response.json().catch(() => ({}));
@@ -17,13 +24,9 @@ async function request(path, options = {}) {
   if (!response.ok) {
     // The dev proxy answers 502/503/504 (with no JSON body) when the auth
     // API isn't running.
-    const message = data.error
-      ? data.error
-      : response.status >= 502
-        ? UNREACHABLE_MESSAGE
-        : "Something went wrong.";
+    if (!data.error && response.status >= 502) throw unreachableError();
 
-    throw Object.assign(new Error(message), {
+    throw Object.assign(new Error(data.error || i18n.global.t("errors.generic")), {
       status: response.status,
       fieldErrors: data.errors || {},
     });

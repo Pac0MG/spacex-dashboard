@@ -7,14 +7,14 @@
 
     <div class="page-header">
       <div>
-        <h1>Launches</h1>
-        <p>Explore launches from SpaceX.</p>
+        <h1>{{ t("launches.title") }}</h1>
+        <p>{{ t("launches.subtitle") }}</p>
       </div>
 
       <div class="search-group">
         <select v-model="store.searchType" class="search-type-select">
-          <option value="name">Name</option>
-          <option value="year">Year</option>
+          <option value="name">{{ t("launches.searchName") }}</option>
+          <option value="year">{{ t("launches.searchYear") }}</option>
         </select>
 
         <input
@@ -40,13 +40,13 @@
 
     <ErrorMessage
       v-else-if="store.error"
-      :message="store.error"
+      :message="t(store.error)"
       @retry="loadLaunches"
     />
 
     <EmptyState
       v-else-if="store.filteredLaunches.length === 0"
-      title="There are no results to present"
+      :title="t('launches.emptyTitle')"
       :message="emptyStateMessage"
     />
 
@@ -64,16 +64,18 @@
           :disabled="currentPage === 1"
           @click="goToPage(currentPage - 1)"
         >
-          Previous
+          {{ t("launches.previous") }}
         </button>
 
-        <span> Page {{ currentPage }} of {{ totalPages }} </span>
+        <span>
+          {{ t("launches.page", { current: currentPage, total: totalPages }) }}
+        </span>
 
         <button
           :disabled="currentPage === totalPages"
           @click="goToPage(currentPage + 1)"
         >
-          Next
+          {{ t("launches.next") }}
         </button>
       </div>
     </template>
@@ -84,6 +86,7 @@
 
 <script setup>
 import { computed, onMounted, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 
 import { useLaunchesStore } from "../../store/launches/launches";
 
@@ -95,6 +98,7 @@ import EmptyState from "../../components/common/EmptyState.vue";
 import NextLaunchHero from "../../components/launches/NextLaunchHero.vue";
 import BackToTopButton from "../../components/layout/BackToTopButton.vue";
 
+const { t } = useI18n();
 const store = useLaunchesStore();
 
 const currentPage = ref(1);
@@ -102,13 +106,15 @@ const launchesPerPage = 8;
 
 const searchPlaceholder = computed(() => {
   return store.searchType === "year"
-    ? "Search by year..."
-    : "Search by name...";
+    ? t("launches.searchByYear")
+    : t("launches.searchByName");
 });
 
 const emptyStateMessage = computed(() => {
   if (!store.search.trim()) return "";
-  return store.searchType === "year" ? "Try a new year" : "Try a new name";
+  return store.searchType === "year"
+    ? t("launches.tryYear")
+    : t("launches.tryName");
 });
 
 const totalPages = computed(() => {

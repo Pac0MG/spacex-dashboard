@@ -16,7 +16,7 @@
         <button
           type="button"
           class="toast-close"
-          aria-label="Dismiss notification"
+          :aria-label="t('common.dismiss')"
           @click="toastStore.dismiss(toast.id)"
         >
           ×
@@ -27,8 +27,10 @@
 </template>
 
 <script setup>
+import { useI18n } from "vue-i18n";
 import { useToastStore } from "../../store/ui/toast";
 
+const { t } = useI18n();
 const toastStore = useToastStore();
 </script>
 

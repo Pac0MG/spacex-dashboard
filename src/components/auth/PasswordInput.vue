@@ -10,9 +10,9 @@
     <button
       type="button"
       class="password-toggle"
-      :aria-label="visible ? 'Hide password' : 'Show password'"
+      :aria-label="visible ? t('password.hide') : t('password.show')"
       :aria-pressed="visible"
-      :title="visible ? 'Hide password' : 'Show password'"
+      :title="visible ? t('password.hide') : t('password.show')"
       @click="visible = !visible"
     >
       <svg
@@ -34,6 +34,9 @@
 
 <script setup>
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 // Attributes (id, autocomplete, required...) belong on the <input>, not the wrapper.
 defineOptions({ inheritAttrs: false });

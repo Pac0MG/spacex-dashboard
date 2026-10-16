@@ -1,18 +1,19 @@
 // Mirrors the checks in server/index.js; the server has the final say.
+// `labelKey` is an i18n key (password.rules.*).
 export const PASSWORD_RULES = [
   {
     id: "length",
-    label: "At least 9 characters",
+    labelKey: "password.rules.length",
     test: (password) => password.length >= 9,
   },
   {
     id: "uppercase",
-    label: "At least 1 uppercase letter",
+    labelKey: "password.rules.uppercase",
     test: (password) => /\p{Lu}/u.test(password),
   },
   {
     id: "special",
-    label: "At least 1 special character (e.g. ! @ # $ %)",
+    labelKey: "password.rules.special",
     test: (password) => /[^\p{L}\p{N}\s]/u.test(password),
   },
 ];

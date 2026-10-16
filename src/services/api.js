@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useToastStore } from "../store/ui/toast";
+import { i18n } from "../i18n";
 
 const baseURL =
   import.meta.env.VITE_API_BASE_URL ||
@@ -13,13 +14,14 @@ const api = axios.create({
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    const { t } = i18n.global;
     const message =
       error.response?.data?.message ||
       error.response?.data?.error ||
       error.message ||
-      "Something went wrong while talking to the API.";
+      t("errors.apiGeneric");
 
-    useToastStore().showError(`API error: ${message}`);
+    useToastStore().showError(t("errors.api", { message }));
 
     return Promise.reject(error);
   },

@@ -5,7 +5,7 @@
     <div class="hero-content">
       <div class="hero-heading">
         <span class="hero-live-dot" aria-hidden="true"></span>
-        <span class="hero-eyebrow">Next Launch</span>
+        <span class="hero-eyebrow">{{ t("nextLaunch.eyebrow") }}</span>
       </div>
 
       <div class="hero-main">
@@ -14,7 +14,7 @@
             <img
               v-if="launch.links?.patch?.small"
               :src="launch.links.patch.small"
-              :alt="`Mission patch for ${launch.name}`"
+              :alt="t('common.missionPatch', { name: launch.name })"
             />
             <span v-else class="hero-patch-fallback">🚀</span>
           </RouterLink>
@@ -24,7 +24,7 @@
           <h2>{{ launch.name }}</h2>
           <p class="hero-date">{{ formattedDate }}</p>
           <RouterLink class="hero-link" :to="`/launches/${launch.id}`">
-            View mission details
+            {{ t("nextLaunch.viewDetails") }}
           </RouterLink>
         </div>
       </div>
@@ -32,21 +32,22 @@
       <div v-if="!hasLaunched" class="countdown">
         <div
           v-for="unit in countdownUnits"
-          :key="unit.label"
+          :key="unit.id"
           class="countdown-unit"
         >
           <span class="countdown-value">{{ unit.value }}</span>
-          <span class="countdown-label">{{ unit.label }}</span>
+          <span class="countdown-label">{{ t(`nextLaunch.${unit.id}`) }}</span>
         </div>
       </div>
 
-      <p v-else class="hero-liftoff">🚀 Liftoff!</p>
+      <p v-else class="hero-liftoff">{{ t("nextLaunch.liftoff") }}</p>
     </div>
   </section>
 </template>
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from "vue";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps({
   launch: {
@@ -54,6 +55,8 @@ const props = defineProps({
     required: true,
   },
 });
+
+const { t, d } = useI18n();
 
 const now = ref(Date.now());
 let timerId = null;
@@ -69,13 +72,7 @@ onUnmounted(() => {
 });
 
 const formattedDate = computed(() => {
-  return new Date(props.launch.date_utc).toLocaleString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  return d(new Date(props.launch.date_utc), "dateTime");
 });
 
 const remainingMs = computed(() => {
@@ -97,10 +94,10 @@ const countdownUnits = computed(() => {
   const seconds = totalSeconds % 60;
 
   return [
-    { label: "Days", value: pad(days) },
-    { label: "Hours", value: pad(hours) },
-    { label: "Min", value: pad(minutes) },
-    { label: "Sec", value: pad(seconds) },
+    { id: "days", value: pad(days) },
+    { id: "hours", value: pad(hours) },
+    { id: "minutes", value: pad(minutes) },
+    { id: "seconds", value: pad(seconds) },
   ];
 });
 </script>

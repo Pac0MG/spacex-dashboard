@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { t } from "./messages.js";
 
 // Set SMTP_HOST (plus SMTP_PORT, SMTP_USER, SMTP_PASS, MAIL_FROM) to send real
 // emails. Without it, messages are printed to the server console instead, which
@@ -14,16 +15,17 @@ const transport = SMTP_HOST
     })
   : null;
 
-export async function sendPasswordResetEmail({ to, name, link }) {
+// `locale` is the language of the request that asked for the reset.
+export async function sendPasswordResetEmail({ to, name, link, locale }) {
   const text = [
-    `Hi ${name},`,
+    t(locale, "resetEmailGreeting", { name }),
     "",
-    "We received a request to reset your SpaceX Dashboard password.",
-    "Open this link to choose a new one (valid for 1 hour):",
+    t(locale, "resetEmailIntro"),
+    t(locale, "resetEmailAction"),
     "",
     link,
     "",
-    "If you didn't ask for this, you can ignore this email.",
+    t(locale, "resetEmailIgnore"),
   ].join("\n");
 
   if (!transport) {
@@ -34,7 +36,7 @@ export async function sendPasswordResetEmail({ to, name, link }) {
   await transport.sendMail({
     from: MAIL_FROM || SMTP_USER,
     to,
-    subject: "Reset your SpaceX Dashboard password",
+    subject: t(locale, "resetEmailSubject"),
     text,
   });
 }

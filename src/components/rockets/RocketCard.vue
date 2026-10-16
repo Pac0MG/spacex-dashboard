@@ -4,15 +4,15 @@
       <img
         v-if="rocket.flickr_images?.[0]"
         :src="rocket.flickr_images[0]"
-        :alt="`Photo of ${rocket.name}`"
+        :alt="t('rockets.photoOf', { name: rocket.name })"
       />
-      <div v-else class="no-image">No image</div>
+      <div v-else class="no-image">{{ t("common.noImage") }}</div>
     </div>
     <div class="rocket-content">
       <div class="rocket-title">
         <h2>{{ rocket.name }}</h2>
         <span class="status" :class="rocket.active ? 'active' : 'retired'">
-          {{ rocket.active ? "Active" : "Retired" }}
+          {{ rocket.active ? t("status.active") : t("status.retired") }}
         </span>
       </div>
 
@@ -22,31 +22,31 @@
 
       <dl class="specs">
         <div class="spec">
-          <dt>First flight</dt>
+          <dt>{{ t("rockets.firstFlight") }}</dt>
           <dd>{{ formattedFirstFlight }}</dd>
         </div>
         <div class="spec">
-          <dt>Height</dt>
-          <dd>{{ rocket.height?.meters }} m</dd>
+          <dt>{{ t("rockets.height") }}</dt>
+          <dd>{{ formatMeters(rocket.height?.meters) }}</dd>
         </div>
         <div class="spec">
-          <dt>Diameter</dt>
-          <dd>{{ rocket.diameter?.meters }} m</dd>
+          <dt>{{ t("rockets.diameter") }}</dt>
+          <dd>{{ formatMeters(rocket.diameter?.meters) }}</dd>
         </div>
         <div class="spec">
-          <dt>Mass</dt>
+          <dt>{{ t("rockets.mass") }}</dt>
           <dd>{{ formattedMass }}</dd>
         </div>
         <div class="spec">
-          <dt>Country</dt>
+          <dt>{{ t("rockets.country") }}</dt>
           <dd>{{ rocket.country || "—" }}</dd>
         </div>
         <div class="spec">
-          <dt>Success rate</dt>
+          <dt>{{ t("rockets.successRate") }}</dt>
           <dd>{{ rocket.success_rate_pct }}%</dd>
         </div>
         <div class="spec">
-          <dt>Cost per launch</dt>
+          <dt>{{ t("rockets.costPerLaunch") }}</dt>
           <dd>{{ formattedCost }}</dd>
         </div>
       </dl>
@@ -56,6 +56,7 @@
 
 <script setup>
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps({
   rocket: {
@@ -64,24 +65,26 @@ const props = defineProps({
   },
 });
 
+const { t, d, n } = useI18n();
+
 const formattedFirstFlight = computed(() => {
   if (!props.rocket.first_flight) return "—";
-  return new Date(props.rocket.first_flight).toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+  return d(new Date(props.rocket.first_flight), "date");
 });
 
 const formattedCost = computed(() => {
   if (!props.rocket.cost_per_launch) return "—";
-  return `$${props.rocket.cost_per_launch.toLocaleString("en-US")}`;
+  return n(props.rocket.cost_per_launch, "usd");
 });
 
 const formattedMass = computed(() => {
   if (!props.rocket.mass?.kg) return "—";
-  return `${props.rocket.mass.kg.toLocaleString("en-US")} kg`;
+  return `${n(props.rocket.mass.kg)} kg`;
 });
+
+function formatMeters(value) {
+  return typeof value === "number" ? `${n(value)} m` : "—";
+}
 </script>
 
 <style scoped>

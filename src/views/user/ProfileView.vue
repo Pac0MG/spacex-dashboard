@@ -5,7 +5,7 @@
         <AvatarPicker
           v-model="avatar"
           :disabled="savingPhoto"
-          hint="Click to add a photo"
+          :hint="t('profile.photoHint')"
         />
         <p v-if="photoError" class="auth-field-error" role="alert">
           {{ photoError }}
@@ -16,15 +16,15 @@
 
         <dl class="profile-details">
           <div>
-            <dt>Name</dt>
+            <dt>{{ t("auth.fields.name") }}</dt>
             <dd>{{ user.name }}</dd>
           </div>
           <div>
-            <dt>Username</dt>
+            <dt>{{ t("auth.fields.username") }}</dt>
             <dd>{{ user.username }}</dd>
           </div>
           <div>
-            <dt>Email</dt>
+            <dt>{{ t("auth.fields.email") }}</dt>
             <dd>{{ user.email }}</dd>
           </div>
         </dl>
@@ -36,13 +36,12 @@
             class="profile-delete"
             @click="confirmingDelete = true"
           >
-            Delete account
+            {{ t("profile.deleteAccount") }}
           </button>
 
           <form v-else class="auth-form" novalidate @submit.prevent="deleteAccount">
             <p class="profile-danger-text">
-              This permanently deletes your account. It can't be undone. Enter
-              your password to confirm.
+              {{ t("profile.deleteWarning") }}
             </p>
 
             <p v-if="deleteError" class="auth-error" role="alert">
@@ -50,7 +49,7 @@
             </p>
 
             <div class="auth-field">
-              <label for="delete-password">Password</label>
+              <label for="delete-password">{{ t("auth.fields.password") }}</label>
               <input
                 id="delete-password"
                 v-model="deletePassword"
@@ -68,14 +67,14 @@
                 :disabled="deleting"
                 @click="cancelDelete"
               >
-                Cancel
+                {{ t("profile.cancel") }}
               </button>
               <button
                 type="submit"
                 class="profile-delete profile-delete-confirm"
                 :disabled="deleting"
               >
-                {{ deleting ? "Deleting..." : "Delete my account" }}
+                {{ deleting ? t("profile.deleting") : t("profile.deleteConfirm") }}
               </button>
             </div>
           </form>
@@ -84,7 +83,7 @@
 
       <section class="profile-favorites">
         <h2>
-          Favorite launches
+          {{ t("profile.favoritesTitle") }}
           <span v-if="!launches.loading && !launches.error" class="count">
             {{ favoriteLaunches.length }}
           </span>
@@ -94,14 +93,14 @@
 
         <ErrorMessage
           v-else-if="launches.error"
-          :message="launches.error"
+          :message="t(launches.error)"
           @retry="launches.fetchLaunches"
         />
 
         <EmptyState
           v-else-if="favoriteLaunches.length === 0"
-          title="No favorite launches yet"
-          message="Tap the star on a launch to save it here."
+          :title="t('profile.noFavoritesTitle')"
+          :message="t('profile.noFavoritesMessage')"
         />
 
         <div v-else class="favorites-grid">
@@ -119,6 +118,7 @@
 <script setup>
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import AvatarPicker from "../../components/user/AvatarPicker.vue";
 import EmptyState from "../../components/common/EmptyState.vue";
 import ErrorMessage from "../../components/common/ErrorMessage.vue";
@@ -129,6 +129,7 @@ import { useFavoritesStore } from "../../store/launches/favorites";
 import { useLaunchesStore } from "../../store/launches/launches";
 import { useToastStore } from "../../store/ui/toast";
 
+const { t } = useI18n();
 const router = useRouter();
 const auth = useAuthStore();
 const favorites = useFavoritesStore();
@@ -179,7 +180,7 @@ async function deleteAccount() {
   deleteError.value = "";
 
   if (!deletePassword.value) {
-    deleteError.value = "Enter your password to confirm.";
+    deleteError.value = t("profile.deleteMissing");
     return;
   }
 
@@ -188,7 +189,7 @@ async function deleteAccount() {
   try {
     await auth.deleteAccount(deletePassword.value);
     favorites.forgetUser(userId);
-    toast.show("Your account has been deleted.", "info");
+    toast.show(t("profile.deleted"), "info");
     router.replace({ name: "login" });
   } catch (err) {
     deleteError.value = err.message;

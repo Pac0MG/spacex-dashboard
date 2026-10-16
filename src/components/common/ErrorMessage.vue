@@ -1,14 +1,18 @@
 <template>
   <div class="error-message">
-    <h2>Upss, something went wrong!</h2>
+    <h2>{{ t("errors.title") }}</h2>
 
     <p>{{ message }}</p>
 
-    <button @click="$emit('retry')">Try again later, please!</button>
+    <button @click="$emit('retry')">{{ t("errors.retry") }}</button>
   </div>
 </template>
 
 <script setup>
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
+
 defineProps({
   message: {
     type: String,

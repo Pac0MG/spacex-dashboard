@@ -1,7 +1,7 @@
 <template>
   <AuthCard
-    title="Sign up"
-    subtitle="Create an account to explore SpaceX launches."
+    :title="t('auth.signup.title')"
+    :subtitle="t('auth.signup.subtitle')"
   >
     <form class="auth-form" novalidate @submit.prevent="submit">
       <p v-if="error" class="auth-error" role="alert">{{ error }}</p>
@@ -12,7 +12,7 @@
       </span>
 
       <div class="auth-field" :class="{ 'has-error': fieldErrors.name }">
-        <label for="name">Name</label>
+        <label for="name">{{ t("auth.fields.name") }}</label>
         <input
           id="name"
           v-model="form.name"
@@ -27,7 +27,7 @@
       </div>
 
       <div class="auth-field" :class="{ 'has-error': fieldErrors.username }">
-        <label for="username">Username</label>
+        <label for="username">{{ t("auth.fields.username") }}</label>
         <input
           id="username"
           v-model="form.username"
@@ -41,7 +41,7 @@
       </div>
 
       <div class="auth-field" :class="{ 'has-error': fieldErrors.email }">
-        <label for="email">Email</label>
+        <label for="email">{{ t("auth.fields.email") }}</label>
         <input
           id="email"
           v-model="form.email"
@@ -55,7 +55,7 @@
       </div>
 
       <div class="auth-field" :class="{ 'has-error': fieldErrors.password }">
-        <label for="password">Password</label>
+        <label for="password">{{ t("auth.fields.password") }}</label>
         <PasswordInput
           id="password"
           v-model="form.password"
@@ -68,12 +68,12 @@
         </span>
         <PasswordRequirements v-if="form.password" :password="form.password" />
         <span v-else class="auth-field-hint">
-          At least 9 characters, 1 uppercase letter and 1 special character.
+          {{ t("auth.passwordHint") }}
         </span>
       </div>
 
       <div class="auth-field" :class="{ 'has-error': fieldErrors.confirm }">
-        <label for="confirm">Confirm password</label>
+        <label for="confirm">{{ t("auth.signup.confirm") }}</label>
         <PasswordInput
           id="confirm"
           v-model="confirm"
@@ -86,14 +86,14 @@
       </div>
 
       <button type="submit" class="auth-submit" :disabled="loading">
-        {{ loading ? "Creating account..." : "Sign up" }}
+        {{ loading ? t("auth.signup.submitting") : t("auth.signup.submit") }}
       </button>
     </form>
 
     <template #footer>
-      Already have an account?
+      {{ t("auth.signup.haveAccount") }}
       <RouterLink :to="{ name: 'login', query: route.query }">
-        Log in
+        {{ t("auth.signup.loginLink") }}
       </RouterLink>
     </template>
   </AuthCard>
@@ -102,6 +102,7 @@
 <script setup>
 import { reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import AuthCard from "../../components/auth/AuthCard.vue";
 import AvatarPicker from "../../components/user/AvatarPicker.vue";
 import PasswordInput from "../../components/auth/PasswordInput.vue";
@@ -110,6 +111,7 @@ import { useAuthStore } from "../../store/auth/auth";
 import { meetsPasswordRules } from "../../utils/passwordRules";
 import { safeRedirect } from "../../router/redirect";
 
+const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const auth = useAuthStore();
@@ -132,11 +134,11 @@ async function submit() {
   fieldErrors.value = {};
 
   if (!meetsPasswordRules(form.password)) {
-    fieldErrors.value = { password: "The password doesn't meet all the requirements." };
+    fieldErrors.value = { password: t("auth.rulesNotMet") };
     return;
   }
   if (form.password !== confirm.value) {
-    fieldErrors.value = { confirm: "The passwords don't match." };
+    fieldErrors.value = { confirm: t("auth.mismatch") };
     return;
   }
 

@@ -7,6 +7,7 @@ export const useRocketsStore = defineStore("rockets", () => {
   const rocketById = ref(new Map());
 
   const loading = ref(false);
+  // An i18n key, not text, so the message follows language changes.
   const error = ref(null);
 
   async function fetchRockets(force = false) {
@@ -26,8 +27,7 @@ export const useRocketsStore = defineStore("rockets", () => {
         rocketById.value.set(rocket.id, rocket);
       });
     } catch (err) {
-      error.value =
-        "It's not possible load the rockets. Please try again later!";
+      error.value = "errors.loadRockets";
     } finally {
       loading.value = false;
     }
@@ -50,8 +50,7 @@ export const useRocketsStore = defineStore("rockets", () => {
 
       return rocket;
     } catch (err) {
-      error.value =
-        "It's not possible load the rockets. Please try again later!";
+      error.value = "errors.loadRockets";
       throw err;
     } finally {
       loading.value = false;

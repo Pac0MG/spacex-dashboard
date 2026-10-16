@@ -2,7 +2,7 @@
   <button
     type="button"
     class="search-trigger"
-    aria-label="Open search (Ctrl+K)"
+    :aria-label="t('search.open', { shortcut: shortcutLabel })"
     @click="open"
   >
     <svg
@@ -18,7 +18,7 @@
       <path d="m21 21-4.3-4.3" />
     </svg>
 
-    <span class="search-trigger-label">Search</span>
+    <span class="search-trigger-label">{{ t("search.label") }}</span>
     <span class="search-trigger-kbd">{{ shortcutLabel }}</span>
   </button>
 
@@ -29,7 +29,7 @@
           class="search-panel"
           role="dialog"
           aria-modal="true"
-          aria-label="Global search"
+          :aria-label="t('search.dialog')"
         >
           <div class="search-input-row">
             <svg
@@ -50,7 +50,7 @@
               v-model="query"
               type="text"
               class="search-input"
-              placeholder="Search missions or rockets..."
+              :placeholder="t('search.placeholder')"
               @keydown="onKeydown"
             />
 
@@ -62,7 +62,7 @@
           <div v-if="query.trim()" class="search-results">
             <template v-if="results.length">
               <div v-if="matchedLaunches.length" class="search-section">
-                <p class="search-section-label">Missions</p>
+                <p class="search-section-label">{{ t("search.missions") }}</p>
 
                 <button
                   v-for="(launch, i) in matchedLaunches"
@@ -85,7 +85,7 @@
               </div>
 
               <div v-if="matchedRockets.length" class="search-section">
-                <p class="search-section-label">Rockets</p>
+                <p class="search-section-label">{{ t("search.rockets") }}</p>
 
                 <button
                   v-for="(rocket, i) in matchedRockets"
@@ -98,19 +98,18 @@
                 >
                   <span class="result-main">
                     <span class="result-name">{{ rocket.name }}</span>
-                    <span class="result-meta">Rocket</span>
+                    <span class="result-meta">{{ t("search.rocket") }}</span>
                   </span>
                 </button>
               </div>
             </template>
 
-            <p v-else class="search-empty">No results for "{{ query }}"</p>
+            <p v-else class="search-empty">
+              {{ t("search.noResults", { query }) }}
+            </p>
           </div>
 
-          <p v-else class="search-hint">
-            Type to search missions and rockets. Use ↑ ↓ to navigate, Enter to
-            open, Esc to close.
-          </p>
+          <p v-else class="search-hint">{{ t("search.hint") }}</p>
         </div>
       </div>
     </Transition>
@@ -120,9 +119,11 @@
 <script setup>
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { useLaunchesStore } from "../../store/launches/launches";
 import { useRocketsStore } from "../../store/rockets/rockets";
 
+const { t } = useI18n();
 const router = useRouter();
 const launchesStore = useLaunchesStore();
 const rocketsStore = useRocketsStore();
@@ -183,9 +184,9 @@ function statusClass(launch) {
 
 function statusLabel(launch) {
   if (launch.upcoming) {
-    return "Upcoming";
+    return t("status.upcoming");
   }
-  return launch.success ? "Success" : "Failure";
+  return launch.success ? t("status.success") : t("status.failure");
 }
 
 function open() {

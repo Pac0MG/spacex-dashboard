@@ -26,7 +26,7 @@
           role="switch"
           :aria-checked="themeStore.isDark"
           :aria-label="
-            themeStore.isDark ? 'Switch to light mode' : 'Switch to dark mode'
+            themeStore.isDark ? t('nav.switchToLight') : t('nav.switchToDark')
           "
           @click="themeStore.toggleTheme"
         >
@@ -69,15 +69,32 @@
           </span>
         </button>
 
-        <template v-if="authStore.isAuthenticated">
-          <RouterLink to="/launches"> Launches </RouterLink>
+        <div class="locale-switch" role="group" :aria-label="t('nav.language')">
+          <button
+            v-for="option in localeStore.locales"
+            :key="option.code"
+            type="button"
+            class="locale-option"
+            :class="{ active: option.code === localeStore.locale }"
+            :aria-pressed="option.code === localeStore.locale"
+            :aria-label="option.name"
+            :title="option.name"
+            :lang="option.code"
+            @click="localeStore.setLocale(option.code)"
+          >
+            {{ option.label }}
+          </button>
+        </div>
 
-          <RouterLink to="/rockets"> Rockets </RouterLink>
+        <template v-if="authStore.isAuthenticated">
+          <RouterLink to="/launches"> {{ t("nav.launches") }} </RouterLink>
+
+          <RouterLink to="/rockets"> {{ t("nav.rockets") }} </RouterLink>
 
           <RouterLink
             to="/profile"
             class="nav-profile"
-            :title="`${authStore.user.username} — view profile`"
+            :title="t('nav.viewProfile', { username: authStore.user.username })"
           >
             <UserAvatar
               :src="authStore.user.avatar"
@@ -88,7 +105,7 @@
           </RouterLink>
 
           <button type="button" class="nav-logout" @click="logout">
-            Log out
+            {{ t("nav.logout") }}
           </button>
         </template>
       </nav>
@@ -108,13 +125,17 @@
 
 <script setup>
 import { useThemeStore } from "./store/ui/theme";
+import { useLocaleStore } from "./store/ui/locale";
 import UseToast from "./components/layout/UseToast.vue";
 import GlobalSearch from "./components/layout/GlobalSearch.vue";
 import UserAvatar from "./components/user/UserAvatar.vue";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { useAuthStore } from "./store/auth/auth";
 
+const { t } = useI18n();
 const themeStore = useThemeStore();
+const localeStore = useLocaleStore();
 const authStore = useAuthStore();
 const router = useRouter();
 
@@ -313,6 +334,11 @@ body {
   gap: 12px;
 }
 
+.theme-toggle,
+.locale-switch {
+  flex-shrink: 0;
+}
+
 .theme-toggle {
   display: flex;
   align-items: center;
@@ -376,6 +402,34 @@ body {
 
 .theme-toggle.is-dark .icon-moon {
   opacity: 1;
+}
+
+.locale-switch {
+  display: flex;
+  padding: 2px;
+  border-radius: 999px;
+  background: var(--color-toggle-track-bg);
+}
+
+.locale-option {
+  padding: 4px 9px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-header-text);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.locale-option.active {
+  background: var(--color-toggle-knob-bg);
+  color: var(--color-toggle-icon-color);
 }
 
 /* Launches, Rockets, profile and Log out share one button shape. */

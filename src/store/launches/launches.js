@@ -10,6 +10,7 @@ export const useLaunchesStore = defineStore("launches", () => {
   const launchById = ref(new Map());
 
   const loading = ref(false);
+  // An i18n key, not text, so the message follows language changes.
   const error = ref(null);
   const search = ref("");
   const searchType = ref("name");
@@ -107,8 +108,7 @@ export const useLaunchesStore = defineStore("launches", () => {
         launchById.value.set(launch.id, launch);
       });
     } catch (err) {
-      error.value =
-        "It's not possible load the launches. Please try again later!";
+      error.value = "errors.loadLaunches";
     } finally {
       loading.value = false;
     }
@@ -131,8 +131,7 @@ export const useLaunchesStore = defineStore("launches", () => {
 
       return launch;
     } catch (err) {
-      error.value =
-        "It's not possible load the launches. Please try again later!";
+      error.value = "errors.loadLaunches";
       throw err;
     } finally {
       loading.value = false;

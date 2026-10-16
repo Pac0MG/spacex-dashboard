@@ -1,6 +1,6 @@
 <template>
   <div class="launch-filter">
-    <h2>Filter Launches</h2>
+    <h2>{{ t("filter.title") }}</h2>
     <div class="filter-row">
       <span class="filter-option">
         <input
@@ -9,7 +9,7 @@
           :checked="filters.success"
           @change="updateStatusFilter"
         />
-        <label for="success">Success</label>
+        <label for="success">{{ t("status.success") }}</label>
       </span>
       <span class="filter-option">
         <input
@@ -18,7 +18,7 @@
           :checked="filters.failure"
           @change="updateStatusFilter"
         />
-        <label for="failure">Failure</label>
+        <label for="failure">{{ t("status.failure") }}</label>
       </span>
       <span class="filter-option">
         <input
@@ -27,7 +27,7 @@
           :checked="filters.upcoming"
           @change="updateStatusFilter"
         />
-        <label for="upcoming">Upcoming</label>
+        <label for="upcoming">{{ t("status.upcoming") }}</label>
       </span>
       <span class="filter-option">
         <input
@@ -36,13 +36,13 @@
           :checked="favoritesOnly"
           @change="updateFavoritesOnly"
         />
-        <label for="favoritesOnly">Favorites only ★</label>
+        <label for="favoritesOnly">{{ t("filter.favoritesOnly") }}</label>
       </span>
     </div>
     <div class="year-row">
-      <label for="year-select">Year</label>
+      <label for="year-select">{{ t("filter.year") }}</label>
       <select id="year-select" :value="selectedYear" @change="updateYear">
-        <option value="all">All Years</option>
+        <option value="all">{{ t("filter.allYears") }}</option>
         <option v-for="year in years" :key="year" :value="year">
           {{ year }}
         </option>
@@ -52,6 +52,10 @@
 </template>
 
 <script setup>
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
+
 const props = defineProps({
   filters: {
     type: Object,

@@ -1,23 +1,31 @@
 <template>
   <div class="empty-state">
-    <h2>{{ title }}</h2>
+    <h2>{{ title ?? t("empty.title") }}</h2>
 
-    <p v-if="message">{{ message }}</p>
+    <p v-if="shownMessage">{{ shownMessage }}</p>
   </div>
 </template>
 
 <script setup>
-defineProps({
+import { computed } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
+
+// Left out, these fall back to translated defaults. An empty message hides it.
+const props = defineProps({
   title: {
     type: String,
-    default: "No results found",
+    default: undefined,
   },
 
   message: {
     type: String,
-    default: "There are no results to present",
+    default: undefined,
   },
 });
+
+const shownMessage = computed(() => props.message ?? t("empty.message"));
 </script>
 
 <style scoped>

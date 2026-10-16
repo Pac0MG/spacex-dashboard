@@ -1,8 +1,11 @@
 <template>
-  <AuthCard title="New password" subtitle="Choose a new password for your account.">
+  <AuthCard
+    :title="t('auth.reset.title')"
+    :subtitle="t('auth.reset.subtitle')"
+  >
     <div v-if="!token" class="auth-form">
       <p class="auth-error" role="alert">
-        This reset link is incomplete. Request a new one.
+        {{ t("auth.reset.incomplete") }}
       </p>
     </div>
 
@@ -10,7 +13,7 @@
       <p v-if="error" class="auth-error" role="alert">{{ error }}</p>
 
       <div class="auth-field" :class="{ 'has-error': fieldError }">
-        <label for="password">New password</label>
+        <label for="password">{{ t("auth.reset.password") }}</label>
         <PasswordInput
           id="password"
           v-model="password"
@@ -22,12 +25,12 @@
         <span v-if="fieldError" class="auth-field-error">{{ fieldError }}</span>
         <PasswordRequirements v-if="password" :password="password" />
         <span v-else class="auth-field-hint">
-          At least 9 characters, 1 uppercase letter and 1 special character.
+          {{ t("auth.passwordHint") }}
         </span>
       </div>
 
       <div class="auth-field" :class="{ 'has-error': confirmError }">
-        <label for="confirm">Confirm new password</label>
+        <label for="confirm">{{ t("auth.reset.confirm") }}</label>
         <PasswordInput
           id="confirm"
           v-model="confirm"
@@ -40,13 +43,13 @@
       </div>
 
       <button type="submit" class="auth-submit" :disabled="loading">
-        {{ loading ? "Saving..." : "Change password" }}
+        {{ loading ? t("auth.reset.submitting") : t("auth.reset.submit") }}
       </button>
     </form>
 
     <template #footer>
       <RouterLink :to="{ name: 'forgot-password' }">
-        Request a new link
+        {{ t("auth.reset.newLink") }}
       </RouterLink>
     </template>
   </AuthCard>
@@ -55,12 +58,14 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import AuthCard from "../../components/auth/AuthCard.vue";
 import PasswordInput from "../../components/auth/PasswordInput.vue";
 import PasswordRequirements from "../../components/auth/PasswordRequirements.vue";
 import { resetPasswordRequest } from "../../services/auth";
 import { meetsPasswordRules } from "../../utils/passwordRules";
 
+const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 
@@ -81,11 +86,11 @@ async function submit() {
   confirmError.value = "";
 
   if (!meetsPasswordRules(password.value)) {
-    fieldError.value = "The password doesn't meet all the requirements.";
+    fieldError.value = t("auth.rulesNotMet");
     return;
   }
   if (password.value !== confirm.value) {
-    confirmError.value = "The passwords don't match.";
+    confirmError.value = t("auth.mismatch");
     return;
   }
 

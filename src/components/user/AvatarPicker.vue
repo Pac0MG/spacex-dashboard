@@ -3,11 +3,11 @@
     <button
       type="button"
       class="avatar-picker-circle"
-      aria-label="Choose a profile photo"
+      :aria-label="t('avatar.choose')"
       :disabled="disabled"
       @click="input.click()"
     >
-      <img v-if="modelValue" :src="modelValue" alt="Profile photo preview" />
+      <img v-if="modelValue" :src="modelValue" :alt="t('avatar.preview')" />
       <svg
         v-else
         class="avatar-picker-icon"
@@ -25,7 +25,7 @@
         <circle cx="12" cy="13" r="3.5" />
       </svg>
       <span class="avatar-picker-overlay">
-        {{ modelValue ? "Change" : "Add photo" }}
+        {{ modelValue ? t("avatar.change") : t("avatar.add") }}
       </span>
     </button>
 
@@ -36,9 +36,9 @@
       :disabled="disabled"
       @click="remove"
     >
-      Remove photo
+      {{ t("avatar.remove") }}
     </button>
-    <span v-else-if="hint" class="avatar-picker-hint">{{ hint }}</span>
+    <span v-else-if="shownHint" class="avatar-picker-hint">{{ shownHint }}</span>
 
     <span v-if="error" class="auth-field-error" role="alert">{{ error }}</span>
 
@@ -53,15 +53,20 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
 
-defineProps({
+const props = defineProps({
   modelValue: { type: String, default: null },
   disabled: { type: Boolean, default: false },
-  // Small caption shown under the circle while there's no photo.
-  hint: { type: String, default: "Optional" },
+  // Small caption shown under the circle while there's no photo. Defaults to
+  // "Optional"; pass "" to hide it.
+  hint: { type: String, default: undefined },
 });
 const emit = defineEmits(["update:modelValue"]);
+
+const { t } = useI18n();
+const shownHint = computed(() => props.hint ?? t("avatar.optional"));
 
 const OUTPUT_SIZE = 256;
 const MAX_INPUT_BYTES = 10 * 1024 * 1024;
@@ -108,14 +113,14 @@ async function onFile(event) {
   error.value = "";
 
   if (!file.type.startsWith("image/") || file.size > MAX_INPUT_BYTES) {
-    error.value = "Choose an image file smaller than 10 MB.";
+    error.value = t("avatar.tooLarge");
     return;
   }
 
   try {
     emit("update:modelValue", await toAvatar(file));
   } catch {
-    error.value = "That image couldn't be read. Try a different one.";
+    error.value = t("avatar.unreadable");
   }
 }
 

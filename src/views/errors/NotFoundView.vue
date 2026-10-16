@@ -4,19 +4,21 @@
 
     <div class="not-found-icon" aria-hidden="true">🛰️</div>
 
-    <h1>Lost in space</h1>
+    <h1>{{ t("notFound.title") }}</h1>
 
-    <p class="not-found-text">
-      This page doesn't exist, or it was launched into an orbit we can't reach.
-    </p>
+    <p class="not-found-text">{{ t("notFound.text") }}</p>
 
     <RouterLink to="/launches" class="not-found-link">
-      Back to Launches
+      {{ t("notFound.back") }}
     </RouterLink>
   </section>
 </template>
 
-<script setup></script>
+<script setup>
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
+</script>
 
 <style scoped>
 .not-found {

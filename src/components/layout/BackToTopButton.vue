@@ -4,7 +4,7 @@
       v-if="isVisible"
       type="button"
       class="back-to-top"
-      aria-label="Back to top"
+      :aria-label="t('common.backToTop')"
       @click="scrollToTop"
     >
       <svg
@@ -23,6 +23,9 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 // Only show the button once scrolling back up is actually useful, instead
 // of cluttering the page with it from the very top.

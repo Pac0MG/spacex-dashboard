@@ -1,16 +1,16 @@
 <template>
   <AuthCard
-    title="Log in"
-    subtitle="Use your email or username and password to continue."
+    :title="t('auth.login.title')"
+    :subtitle="t('auth.login.subtitle')"
   >
     <form class="auth-form" novalidate @submit.prevent="submit">
       <p v-if="route.query.reset" class="auth-success" role="status">
-        Password changed. Log in with your new password.
+        {{ t("auth.login.resetDone") }}
       </p>
       <p v-if="error" class="auth-error" role="alert">{{ error }}</p>
 
       <div class="auth-field">
-        <label for="identifier">Email or username</label>
+        <label for="identifier">{{ t("auth.login.identifier") }}</label>
         <input
           id="identifier"
           v-model="identifier"
@@ -22,7 +22,7 @@
       </div>
 
       <div class="auth-field">
-        <label for="password">Password</label>
+        <label for="password">{{ t("auth.fields.password") }}</label>
         <PasswordInput
           id="password"
           v-model="password"
@@ -33,19 +33,19 @@
           class="auth-forgot"
           :to="{ name: 'forgot-password', query: redirectQuery }"
         >
-          Forgot your password?
+          {{ t("auth.login.forgot") }}
         </RouterLink>
       </div>
 
       <button type="submit" class="auth-submit" :disabled="loading">
-        {{ loading ? "Logging in..." : "Log in" }}
+        {{ loading ? t("auth.login.submitting") : t("auth.login.submit") }}
       </button>
     </form>
 
     <template #footer>
-      Don't have an account?
+      {{ t("auth.login.noAccount") }}
       <RouterLink :to="{ name: 'signup', query: route.query }">
-        Sign up
+        {{ t("auth.login.signupLink") }}
       </RouterLink>
     </template>
   </AuthCard>
@@ -54,11 +54,13 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import AuthCard from "../../components/auth/AuthCard.vue";
 import PasswordInput from "../../components/auth/PasswordInput.vue";
 import { useAuthStore } from "../../store/auth/auth";
 import { safeRedirect } from "../../router/redirect";
 
+const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const auth = useAuthStore();
@@ -77,7 +79,7 @@ async function submit() {
   error.value = "";
 
   if (!identifier.value.trim() || !password.value) {
-    error.value = "Enter your email or username and your password.";
+    error.value = t("auth.login.missing");
     return;
   }
 

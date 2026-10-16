@@ -17,6 +17,7 @@ import {
   updateAvatar,
 } from "./db.js";
 import { sendPasswordResetEmail } from "./mail.js";
+import { localeFrom, t } from "./messages.js";
 import { hashPassword, verifyPassword } from "./password.js";
 
 const PORT = Number(process.env.PORT) || 3001;
@@ -41,14 +42,14 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const AVATAR_RE = /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/]+=*$/;
 
 // Same rules as src/utils/passwordRules.js, which shows them while typing.
-function passwordError(password) {
+function passwordError(locale, password) {
   if (
     password.length < PASSWORD_MIN ||
     password.length > PASSWORD_MAX ||
     !/\p{Lu}/u.test(password) ||
     !/[^\p{L}\p{N}\s]/u.test(password)
   ) {
-    return `Password must be ${PASSWORD_MIN}-${PASSWORD_MAX} characters and include at least 1 uppercase letter and 1 special character.`;
+    return t(locale, "passwordRules", { min: PASSWORD_MIN, max: PASSWORD_MAX });
   }
   return null;
 }
@@ -76,7 +77,11 @@ function readJson(req) {
     req.on("data", (chunk) => {
       size += chunk.length;
       if (size > MAX_BODY_BYTES) {
-        reject(Object.assign(new Error("Request too large."), { status: 413 }));
+        reject(
+          Object.assign(new Error(t(localeFrom(req), "requestTooLarge")), {
+            status: 413,
+          }),
+        );
         req.destroy();
         return;
       }
@@ -88,7 +93,11 @@ function readJson(req) {
         const raw = Buffer.concat(chunks).toString("utf8");
         resolve(raw ? JSON.parse(raw) : {});
       } catch {
-        reject(Object.assign(new Error("Invalid JSON."), { status: 400 }));
+        reject(
+          Object.assign(new Error(t(localeFrom(req), "invalidJson")), {
+            status: 400,
+          }),
+        );
       }
     });
 
@@ -125,14 +134,15 @@ function asString(value) {
 }
 
 // Returns an error message, or null when the photo is acceptable.
-function avatarError(avatar) {
+function avatarError(locale, avatar) {
   if (avatar.length > MAX_AVATAR_CHARS || !AVATAR_RE.test(avatar)) {
-    return "The photo must be a JPEG, PNG or WebP image.";
+    return t(locale, "avatarInvalid");
   }
   return null;
 }
 
 async function signup(req, res) {
+  const locale = localeFrom(req);
   const body = await readJson(req);
   const name = asString(body.name);
   const username = asString(body.username);
@@ -142,37 +152,36 @@ async function signup(req, res) {
 
   const errors = {};
   if (name.length < 2 || name.length > 100) {
-    errors.name = "Name must be between 2 and 100 characters.";
+    errors.name = t(locale, "nameLength");
   }
   if (!USERNAME_RE.test(username)) {
-    errors.username =
-      "Username must be 3-30 characters: letters, numbers, dots, dashes or underscores.";
+    errors.username = t(locale, "usernameInvalid");
   }
   if (!EMAIL_RE.test(email) || email.length > 254) {
-    errors.email = "Enter a valid email address.";
+    errors.email = t(locale, "emailInvalid");
   }
-  if (passwordError(password)) {
-    errors.password = passwordError(password);
+  if (passwordError(locale, password)) {
+    errors.password = passwordError(locale, password);
   }
-  if (avatar && avatarError(avatar)) {
-    errors.avatar = avatarError(avatar);
+  if (avatar && avatarError(locale, avatar)) {
+    errors.avatar = avatarError(locale, avatar);
   }
 
   if (Object.keys(errors).length) {
-    return send(res, 400, { error: "Please fix the highlighted fields.", errors });
+    return send(res, 400, { error: t(locale, "fixFields"), errors });
   }
 
   for (const existing of findConflicts({ username, email })) {
     if (existing.username.toLowerCase() === username.toLowerCase()) {
-      errors.username = "This username is already taken.";
+      errors.username = t(locale, "usernameTaken");
     }
     if (existing.email === email) {
-      errors.email = "An account with this email already exists.";
+      errors.email = t(locale, "emailTaken");
     }
   }
 
   if (Object.keys(errors).length) {
-    return send(res, 409, { error: "Account already exists.", errors });
+    return send(res, 409, { error: t(locale, "accountExists"), errors });
   }
 
   try {
@@ -185,21 +194,20 @@ async function signup(req, res) {
   } catch (err) {
     // Lost a race with a concurrent signup on the UNIQUE constraints.
     if (String(err.message).includes("UNIQUE")) {
-      return send(res, 409, { error: "Username or email is already in use." });
+      return send(res, 409, { error: t(locale, "usernameOrEmailInUse") });
     }
     throw err;
   }
 }
 
 async function login(req, res) {
+  const locale = localeFrom(req);
   const body = await readJson(req);
   const identifier = asString(body.identifier);
   const password = typeof body.password === "string" ? body.password : "";
 
   if (!identifier || !password) {
-    return send(res, 400, {
-      error: "Enter your email or username and your password.",
-    });
+    return send(res, 400, { error: t(locale, "loginMissing") });
   }
 
   const user = findUserByIdentifier(identifier);
@@ -210,7 +218,7 @@ async function login(req, res) {
 
   // One message for both cases so the form doesn't reveal which accounts exist.
   if (!user || !valid) {
-    return send(res, 401, { error: "Incorrect email, username or password." });
+    return send(res, 401, { error: t(locale, "loginInvalid") });
   }
 
   startSession(res, user, 200);
@@ -223,11 +231,12 @@ function hashToken(token) {
 // Always answers the same way, whether or not the email has an account, so the
 // form can't be used to find out who is registered.
 async function forgotPassword(req, res) {
+  const locale = localeFrom(req);
   const body = await readJson(req);
   const email = asString(body.email).toLowerCase();
 
   if (!EMAIL_RE.test(email) || email.length > 254) {
-    return send(res, 400, { error: "Enter a valid email address." });
+    return send(res, 400, { error: t(locale, "emailInvalid") });
   }
 
   const user = findUserByEmail(email);
@@ -244,6 +253,7 @@ async function forgotPassword(req, res) {
       to: user.email,
       name: user.name,
       link: `${APP_URL}/reset-password?token=${token}`,
+      locale,
     }).catch((err) => console.error("Could not send reset email:", err.message));
   }
 
@@ -251,20 +261,19 @@ async function forgotPassword(req, res) {
 }
 
 async function resetPasswordHandler(req, res) {
+  const locale = localeFrom(req);
   const body = await readJson(req);
   const token = typeof body.token === "string" ? body.token : "";
   const password = typeof body.password === "string" ? body.password : "";
 
-  const message = passwordError(password);
+  const message = passwordError(locale, password);
   if (message) {
     return send(res, 400, { error: message, errors: { password: message } });
   }
 
   const reset = token && findPasswordReset(hashToken(token));
   if (!reset) {
-    return send(res, 400, {
-      error: "This reset link is invalid or has expired. Request a new one.",
-    });
+    return send(res, 400, { error: t(locale, "resetInvalid") });
   }
 
   resetPassword(reset.user_id, await hashPassword(password));
@@ -281,7 +290,7 @@ function logout(req, res) {
 function requireUser(req, res) {
   const token = getCookie(req, SESSION_COOKIE);
   const user = token && findUserBySession(token);
-  if (!user) send(res, 401, { error: "Not authenticated." });
+  if (!user) send(res, 401, { error: t(localeFrom(req), "notAuthenticated") });
   return user || null;
 }
 
@@ -299,7 +308,7 @@ async function changeAvatar(req, res) {
   const body = await readJson(req);
   const avatar = typeof body.avatar === "string" ? body.avatar : null;
 
-  const error = avatar && avatarError(avatar);
+  const error = avatar && avatarError(localeFrom(req), avatar);
   if (error) return send(res, 400, { error, errors: { avatar: error } });
 
   send(res, 200, { user: publicUser(updateAvatar(user.id, avatar)) });
@@ -314,7 +323,7 @@ async function deleteAccount(req, res) {
   const password = typeof body.password === "string" ? body.password : "";
 
   if (!(await verifyPassword(password.slice(0, PASSWORD_MAX), user.password_hash))) {
-    return send(res, 403, { error: "Incorrect password." });
+    return send(res, 403, { error: t(localeFrom(req), "incorrectPassword") });
   }
 
   deleteUser(user.id);
@@ -336,7 +345,7 @@ const server = createServer(async (req, res) => {
   const path = new URL(req.url, "http://localhost").pathname;
   const handler = routes[`${req.method} ${path}`];
 
-  if (!handler) return send(res, 404, { error: "Not found." });
+  if (!handler) return send(res, 404, { error: t(localeFrom(req), "notFound") });
 
   try {
     await handler(req, res);
@@ -344,7 +353,7 @@ const server = createServer(async (req, res) => {
     if (res.headersSent) return;
     if (err.status) return send(res, err.status, { error: err.message });
     console.error(err);
-    send(res, 500, { error: "Internal server error." });
+    send(res, 500, { error: t(localeFrom(req), "internalError") });
   }
 });
 

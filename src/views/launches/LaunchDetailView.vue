@@ -1,7 +1,7 @@
 <template>
   <section>
     <RouterLink to="/launches" class="back-link">
-      ← Back to Launches
+      {{ t("launchDetail.back") }}
     </RouterLink>
 
     <LaunchDetailSkeleton
@@ -10,14 +10,14 @@
 
     <ErrorMessage
       v-else-if="launchesStore.error || rocketsStore.error"
-      :message="launchesStore.error || rocketsStore.error"
+      :message="t(launchesStore.error || rocketsStore.error)"
       @retry="loadLaunchDetails"
     />
 
     <EmptyState
       v-else-if="!launch"
-      title="Launch not found"
-      message="This launch could not be found."
+      :title="t('launchDetail.notFoundTitle')"
+      :message="t('launchDetail.notFoundMessage')"
     />
 
     <article v-else class="detail-page">
@@ -25,9 +25,9 @@
         <img
           v-if="launch.links?.patch?.large"
           :src="launch.links.patch.large"
-          :alt="`Mission patch for ${launch.name}`"
+          :alt="t('common.missionPatch', { name: launch.name })"
         />
-        <div v-else class="no-image">No image</div>
+        <div v-else class="no-image">{{ t("common.noImage") }}</div>
       </div>
 
       <header class="detail-header">
@@ -42,12 +42,10 @@
             type="button"
             class="favorite-btn"
             :class="{ active: isFavorite }"
-            :aria-label="
-              isFavorite ? 'Remove from favorites' : 'Add to favorites'
-            "
+            :aria-label="isFavorite ? t('favorites.remove') : t('favorites.add')"
             @click="toggleFavorite"
           >
-            {{ isFavorite ? "★ Favorited" : "☆ Add to favorites" }}
+            {{ isFavorite ? t("favorites.favorited") : t("favorites.addButton") }}
           </button>
         </div>
       </header>
@@ -57,30 +55,30 @@
       </p>
 
       <div class="detail-section">
-        <h2>Description</h2>
+        <h2>{{ t("launchDetail.description") }}</h2>
 
         <p>
-          {{ launch.details || "No description available." }}
+          {{ launch.details || t("launchDetail.noDescription") }}
         </p>
       </div>
 
       <div class="detail-section">
-        <h2>Rocket</h2>
+        <h2>{{ t("launchDetail.rocket") }}</h2>
 
         <div v-if="rocket" class="rocket-info">
           <strong>{{ rocket.name }}</strong>
 
           <span>
-            State:
-            {{ rocket.active ? "Active" : "Inactive" }}
+            {{ t("launchDetail.state") }}:
+            {{ rocket.active ? t("status.active") : t("status.inactive") }}
           </span>
         </div>
 
-        <p v-else>Rocket information not available.</p>
+        <p v-else>{{ t("launchDetail.rocketUnavailable") }}</p>
       </div>
 
       <div class="detail-section">
-        <h2>Links</h2>
+        <h2>{{ t("launchDetail.links") }}</h2>
 
         <div class="links">
           <a
@@ -89,7 +87,7 @@
             target="_blank"
             rel="noopener noreferrer"
           >
-            Webcast
+            {{ t("launchDetail.webcast") }}
           </a>
 
           <a
@@ -98,7 +96,7 @@
             target="_blank"
             rel="noopener noreferrer"
           >
-            Article
+            {{ t("launchDetail.article") }}
           </a>
 
           <a
@@ -107,7 +105,7 @@
             target="_blank"
             rel="noopener noreferrer"
           >
-            Wikipedia
+            {{ t("launchDetail.wikipedia") }}
           </a>
         </div>
       </div>
@@ -118,6 +116,7 @@
 <script setup>
 import { computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import { useI18n } from "vue-i18n";
 
 import { useLaunchesStore } from "../../store/launches/launches";
 import { useRocketsStore } from "../../store/rockets/rockets";
@@ -128,6 +127,7 @@ import ErrorMessage from "../../components/common/ErrorMessage.vue";
 import EmptyState from "../../components/common/EmptyState.vue";
 
 const route = useRoute();
+const { t, d } = useI18n();
 
 const launchesStore = useLaunchesStore();
 const rocketsStore = useRocketsStore();
@@ -150,17 +150,13 @@ const formattedDate = computed(() => {
     return "";
   }
 
-  return new Date(launch.value.date_utc).toLocaleDateString("pt-PT", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+  return d(new Date(launch.value.date_utc), "date");
 });
 
 const statusLabel = computed(() => {
   if (!launch.value) return "";
-  if (launch.value.upcoming) return "Upcoming";
-  return launch.value.success ? "Success" : "Failure";
+  if (launch.value.upcoming) return t("status.upcoming");
+  return launch.value.success ? t("status.success") : t("status.failure");
 });
 
 const statusClass = computed(() => {

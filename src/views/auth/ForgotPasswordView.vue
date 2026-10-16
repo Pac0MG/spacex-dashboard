@@ -1,18 +1,17 @@
 <template>
   <AuthCard
-    title="Forgot password"
-    subtitle="Enter your account email and we'll send you a link to choose a new password."
+    :title="t('auth.forgot.title')"
+    :subtitle="t('auth.forgot.subtitle')"
   >
     <p v-if="sent" class="auth-success" role="status">
-      If an account exists for {{ email }}, a reset link is on its way. It's
-      valid for 1 hour.
+      {{ t("auth.forgot.sent", { email }) }}
     </p>
 
     <form v-else class="auth-form" novalidate @submit.prevent="submit">
       <p v-if="error" class="auth-error" role="alert">{{ error }}</p>
 
       <div class="auth-field">
-        <label for="email">Email</label>
+        <label for="email">{{ t("auth.fields.email") }}</label>
         <input
           id="email"
           v-model="email"
@@ -24,13 +23,13 @@
       </div>
 
       <button type="submit" class="auth-submit" :disabled="loading">
-        {{ loading ? "Sending..." : "Send reset link" }}
+        {{ loading ? t("auth.forgot.submitting") : t("auth.forgot.submit") }}
       </button>
     </form>
 
     <template #footer>
       <RouterLink :to="{ name: 'login', query: route.query }">
-        Back to log in
+        {{ t("auth.forgot.back") }}
       </RouterLink>
     </template>
   </AuthCard>
@@ -39,9 +38,11 @@
 <script setup>
 import { ref } from "vue";
 import { useRoute } from "vue-router";
+import { useI18n } from "vue-i18n";
 import AuthCard from "../../components/auth/AuthCard.vue";
 import { forgotPasswordRequest } from "../../services/auth";
 
+const { t } = useI18n();
 const route = useRoute();
 
 const email = ref("");
@@ -53,7 +54,7 @@ async function submit() {
   error.value = "";
 
   if (!email.value.trim()) {
-    error.value = "Enter your email address.";
+    error.value = t("auth.forgot.missing");
     return;
   }
 

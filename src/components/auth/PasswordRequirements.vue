@@ -1,5 +1,5 @@
 <template>
-  <ul class="password-requirements" aria-label="Password requirements">
+  <ul class="password-requirements" :aria-label="t('password.requirements')">
     <li
       v-for="rule in rules"
       :key="rule.id"
@@ -17,9 +17,9 @@
         <path v-if="rule.met" d="M5 12.5l4.5 4.5L19 7" />
         <path v-else d="M6 6l12 12M18 6L6 18" />
       </svg>
-      {{ rule.label }}
+      {{ t(rule.labelKey) }}
       <span class="visually-hidden">
-        {{ rule.met ? "(met)" : "(not met)" }}
+        {{ rule.met ? t("password.met") : t("password.notMet") }}
       </span>
     </li>
   </ul>
@@ -27,7 +27,10 @@
 
 <script setup>
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { PASSWORD_RULES } from "../../utils/passwordRules";
+
+const { t } = useI18n();
 
 const props = defineProps({
   password: { type: String, default: "" },
